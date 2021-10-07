@@ -1,6 +1,17 @@
 # stock-performance-app-publish
 
+## このリポジトリについて、できること
+ - 日々の株資産の推移を記録、確認するために作成したツールです
+   - 口座の資産額を1日1回記録することでその金額の推移をチャート表示します
+   - 口座への入出金でチャートが崩れるのを防止する機能があります
+   - 複数の口座を登録することができます(チャートは1本にまとまります)
+ - PHP8、MySQL5.7以上が必要です
+ - composerが必要です
+
+![image](https://user-images.githubusercontent.com/48991931/136362481-2c875d54-9c25-4966-bd78-70686d3459ed.png)
+
 ## セットアップ手順
+以下はWindowsPCにおける手順になります。
 1. composerでPHPのライブラリをインストール
 ```
 composer install
@@ -44,13 +55,7 @@ bin\cake.bat execute_all_migrations_and_seeds
 bin\cake.bat recreate_admin [メールアドレス] [ログインパスワード]
 ```
 
-5. ログディレクトリ、セッションディレクトリ作成
-```
-mkdir logs
-mkdir tmp\sessions
-```
-
-6. ビルトインサーバーを起動して動作確認
+5. ビルトインサーバーを起動して動作確認
 ```
 bin\cake.bat server
 
