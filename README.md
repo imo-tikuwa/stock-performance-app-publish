@@ -76,7 +76,7 @@ bin\cake.bat server
  - 上記設定を済ませた状態で以下のコマンドを実行
    - [account_id]には[口座](http://localhost:8765/admin/accounts)で登録したSBI証券のIDを入力
 ```
-create_sbi_daily_record [account_id]
+bin\cake.bat create_sbi_daily_record [account_id]
 ```
 
 ## その他（営業日カレンダーについて）
