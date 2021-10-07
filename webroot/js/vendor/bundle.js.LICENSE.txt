@@ -1,0 +1,62 @@
+/*!
+   * Sizzle CSS Selector Engine v2.3.6
+   * https://sizzlejs.com/
+   *
+   * Copyright JS Foundation and other contributors
+   * Released under the MIT license
+   * https://js.foundation/
+   *
+   * Date: 2021-02-16
+   */
+
+/*!
+  * Bootstrap v4.4.1 (https://getbootstrap.com/)
+  * Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
+
+/*!
+ * AdminLTE v3.1.0 (https://adminlte.io)
+ * Copyright 2014-2021 Colorlib <https://colorlib.com>
+ * Licensed under MIT (https://github.com/ColorlibHQ/AdminLTE/blob/master/LICENSE)
+ */
+
+/*!
+ * jQuery JavaScript Library v3.6.0
+ * https://jquery.com/
+ *
+ * Includes Sizzle.js
+ * https://sizzlejs.com/
+ *
+ * Copyright OpenJS Foundation and other contributors
+ * Released under the MIT license
+ * https://jquery.org/license
+ *
+ * Date: 2021-03-02T17:08Z
+ */
+
+/*! Pickr 1.8.2 MIT | https://github.com/Simonwep/pickr */
+
+/*! Select2 4.0.13 | https://github.com/select2/select2/blob/master/LICENSE.md */
+
+/*!@preserve
+ * Tempus Dominus Bootstrap4 v5.39.0 (https://tempusdominus.github.io/bootstrap-4/)
+ * Copyright 2016-2020 Jonathan Peterson and contributors
+ * Licensed under MIT (https://github.com/tempusdominus/bootstrap-3/blob/master/LICENSE)
+ */
+
+//! author : LI Long : https://github.com/baryon
+
+//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
+
+//! license : MIT
+
+//! locale : Japanese [ja]
+
+//! moment.js
+
+//! moment.js locale configuration
+
+//! momentjs.com
+
+//! version : 2.29.1
