@@ -12,20 +12,27 @@
 
 ## セットアップ手順
 以下はWindowsPCにおける手順になります。
-1. composerでPHPのライブラリをインストール
+1. リポジトリをクローン
+```
+git clone https://github.com/imo-tikuwa/stock-performance-app-publish.git
+cd stock-performance-app-publish
+```
+
+2. composerでPHPのライブラリをインストール
 ```
 composer install
 ```
 
-2. アプリケーションで使用するデータベースを作成 
+3. アプリケーションで使用するデータベースを作成
+   - MySQLクライアントで以下実行
 ```
 CREATE DATABASE [DB名] CHARACTER SET utf8 COLLATE utf8_general_ci;
 GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,INDEX,ALTER ON [DB名].* TO '[DBユーザー]'@'localhost' IDENTIFIED BY '[DBパスワード]';
 FLUSH PRIVILEGES;
 ```
 
-3. configディレクトリに.envファイルを作成
-   - DATABASE_NAME、DATABASE_USER、DATABASE_PASSはそれぞれ手順2と同じものを入力  
+4. configディレクトリに.envファイルを作成
+   - DATABASE_NAME、DATABASE_USER、DATABASE_PASSはそれぞれ手順3と同じものを入力  
    - DATABASE_PORT、SECURITY_SALTは必要に応じて修正
 ```
 #!/usr/bin/env bash
@@ -47,7 +54,7 @@ export SBI_LOGIN_ID=""
 export SBI_LOGIN_PW=""
 ```
 
-4. マイグレート&シード実行、管理者アカウント生成コマンド実行
+5. マイグレート&シード実行、管理者アカウント生成コマンド実行
    - 便宜上ログインアカウントとしてメールアドレスを入力しますがメールを送信することはありません
 ```
 bin\cake.bat migrations migrate
@@ -55,12 +62,12 @@ bin\cake.bat execute_all_migrations_and_seeds
 bin\cake.bat recreate_admin [メールアドレス] [ログインパスワード]
 ```
 
-5. ビルトインサーバーを起動して動作確認
+6. ビルトインサーバーを起動して動作確認
 ```
 bin\cake.bat server
 
 起動後ブラウザで http://localhost:8765/admin にアクセス
-手順4で入力した[メールアドレス]と[ログインパスワード]をログインIDとパスワードに入力してログインできればOK
+手順5で入力した[メールアドレス]と[ログインパスワード]をログインIDとパスワードに入力してログインできればOK
 ```
 
 ## 使い方
