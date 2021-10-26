@@ -56,6 +56,119 @@ return [
                 'account_records' => '口座ごとの資産',
                 'account_new_link' => '口座の新規追加リンク',
             ],
+            'display_setting_for_handsontable' => [
+                'date' => [
+                    'header_text' => '日付',
+                    'columns_format' => [
+                        'type' => 'date',
+                        'dateFormat' => 'YYYY-MM-DD',
+                    ],
+                ],
+                'record_total_real' => [
+                    'header_text' => '実質資産',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'prev_day_diff_value' => [
+                    'header_text' => '前営業日比',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'prev_day_diff_rate' => [
+                    'header_text' => '前営業日比(%)',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'prev_month_diff_value' => [
+                    'header_text' => '単月成績',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'prev_month_diff_rate' => [
+                    'header_text' => '単月成績(%)',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'beginning_year_diff_value' => [
+                    'header_text' => '年初来成績',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'beginning_year_diff_rate' => [
+                    'header_text' => '年初来成績(%)',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'deposit_day_ammount' => [
+                    'header_text' => '入出金',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'record_total' => [
+                    'header_text' => '証券口座合計',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'account_records' => [
+                    'header_text' => '',
+                    'columns_format' => [
+                        'renderer' => 'html',
+                        'className' => 'htRight',
+                        'columnSorting' => [
+                            'compareFunctionFactory' => null,
+                        ]
+                    ],
+                ],
+                'account_new_link' => [
+                    'header_text' => '',
+                    'columns_format' => [],
+                ],
+            ],
         ],
         'Display' => [
             // 単位表示ON

@@ -6,9 +6,13 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use App\Utils\RecordUtils;
+use App\View\Helper\DisplayHelper;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventInterface;
 use Cake\Utility\Hash;
+use Cake\View\Helper\HtmlHelper;
+use Cake\View\Helper\NumberHelper;
+use Cake\View\View;
 use DateInterval;
 use DateTime;
 
@@ -123,7 +127,8 @@ class DisplayController extends AppController
         $display_data = [
             'accounts' => $accounts,
             'records' => [],
-            'chartData' => '',
+            'chart_data' => '',
+            'table_data' => '',
             'display_only_month' => ($this->config->display_only_month === DISPLAY_ONLY_MONTH_ON),
         ];
 
@@ -184,13 +189,13 @@ select
             from
                 deposits
             where
-                deposits.deposit_date <= calendars.day
+                deposits.deposit_date <= calendars.day and deposits.deleted is null
         ), 0) as deposit_sum
 from
     calendars
     left join
         deposits
-    on  deposits.deposit_date = calendars.day
+    on  deposits.deposit_date = calendars.day and deposits.deleted is null
 where
     calendars.is_holiday = 0
 order by
@@ -204,7 +209,8 @@ EOS;
             $display_data['records'][$date]['record_total_real'] = !is_null($record['record_total']) ? $record['record_total'] - $deposits[$date]['deposit_sum'] : null;
             // 入出金
             $display_data['records'][$date]['deposit_id'] = $deposits[$date]['deposit_id'];
-            $display_data['records'][$date]['deposit_day_ammount'] = $deposits[$date]['deposit_amount'];
+            // fetchAllによって取得される入出金額は文字列なのでnullでない場合はintに変換
+            $display_data['records'][$date]['deposit_day_ammount'] = !is_null($deposits[$date]['deposit_amount']) ? intval($deposits[$date]['deposit_amount']) : null;
         }
 
         // 作成した日ごと口座ごとのデータを元に分析データを作成
@@ -303,7 +309,7 @@ EOS;
         }, $amount_values);
 
         // chart.js用の配列組み立て
-        $display_data['chartData'] = [
+        $display_data['chart_data'] = [
             'type' => 'line',
             'data' => [
                 'labels' => $dates,
@@ -378,7 +384,7 @@ EOS;
 
         // 単位表示がOFFのとき単位をY軸の単位を非表示
         if (!$display_unit) {
-            $display_data['chartData']['options']['scales']['y'] = array_merge($display_data['chartData']['options']['scales']['y'], [
+            $display_data['chart_data']['options']['scales']['y'] = array_merge($display_data['chart_data']['options']['scales']['y'], [
                 'ticks' => [
                     'display' => false,
                 ]
@@ -388,7 +394,7 @@ EOS;
         // 設定で初期資産表示がONとき初期資産をチャートに表示する
         if ($this->config->display_init_record === DISPLAY_INIT_RECORD_ON) {
             $disp_init_record = $this->Accounts->find()->sumOf('init_record') / $devide_num;
-            $display_data['chartData']['data']['datasets'][] = [
+            $display_data['chart_data']['data']['datasets'][] = [
                 'label' => "初期資産{$y_unit}",
                 'backgroundColor' => "#{$this->config->init_record_color}",
                 'borderColor' => "#{$this->config->init_record_color}",
@@ -397,6 +403,164 @@ EOS;
                 'data' => array_fill(0, count($dates), $disp_init_record),
             ];
         }
+
+        // chart.js用の配列を元にhandsontable用の配列組み立て
+        $tmp_view = new View();
+        $number_helper = new NumberHelper($tmp_view);
+        $html_helper = new HtmlHelper($tmp_view);
+        $display_helper = new DisplayHelper($tmp_view);
+        $col_headers = [];
+        $columns_formats = [];
+        foreach (_code('Codes.Configs.display_setting_for_handsontable') as $key => $data) {
+            if (in_array($key, $this->config->display_setting, true)) {
+                if ($key === 'account_records') {
+                    foreach ($display_data['accounts'] as $account_name) {
+                        $col_headers[] = $account_name;
+                    }
+                } elseif($key === 'account_new_link') {
+                    $col_headers[] = $html_helper->link(
+                        "<i class='fas fa-edit fa-fw ml-2'></i>",
+                        ['controller' => 'Accounts', 'action' => ACTION_ADD],
+                        ['escapeTitle' => false]
+                    );
+                } else {
+                    $col_headers[] = $data['header_text'];
+                }
+
+                $columns_formats[] = $data['columns_format'];
+            }
+        }
+        $table_datas = [];
+        $include_date = in_array('date', $this->config->display_setting, true);
+        $include_record_total_real = in_array('record_total_real', $this->config->display_setting, true);
+        $include_prev_day_diff_value = in_array('prev_day_diff_value', $this->config->display_setting, true);
+        $include_prev_day_diff_rate = in_array('prev_day_diff_rate', $this->config->display_setting, true);
+        $include_prev_month_diff_value = in_array('prev_month_diff_value', $this->config->display_setting, true);
+        $include_prev_month_diff_rate = in_array('prev_month_diff_rate', $this->config->display_setting, true);
+        $include_beginning_year_diff_value = in_array('beginning_year_diff_value', $this->config->display_setting, true);
+        $include_beginning_year_diff_rate = in_array('beginning_year_diff_rate', $this->config->display_setting, true);
+        $include_deposit_day_ammount = in_array('deposit_day_ammount', $this->config->display_setting, true);
+        $include_record_total = in_array('record_total', $this->config->display_setting, true);
+        $include_account_records = in_array('account_records', $this->config->display_setting, true);
+        $include_account_new_link = in_array('account_new_link', $this->config->display_setting, true);
+        foreach ($display_data['records'] as $date => $record) {
+            $table_data = [];
+            if ($include_date) {
+                $table_data[] = $date;
+            }
+            if ($include_record_total_real) {
+                $html = '';
+                if (!is_null($record['record_total_real'])) {
+                    $html .= $display_helper->span($number_helper->format($record['record_total_real']) . '円', $record['record_total_real']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_prev_day_diff_value) {
+                $html = '';
+                if (!is_null($record['prev_day_diff_value'])) {
+                    $html .= $display_helper->color($number_helper->format($record['prev_day_diff_value']) . '円', $record['prev_day_diff_value']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_prev_day_diff_rate) {
+                $html = '';
+                if (!is_null($record['prev_day_diff_rate'])) {
+                    $html .= $display_helper->color($number_helper->format($record['prev_day_diff_rate']) . '%', $record['prev_day_diff_rate']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_prev_month_diff_value) {
+                $html = '';
+                if (!is_null($record['prev_month_diff_value'])) {
+                    $html .= $display_helper->color($number_helper->format($record['prev_month_diff_value']) . '円', $record['prev_month_diff_value']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_prev_month_diff_rate) {
+                $html = '';
+                if (!is_null($record['prev_month_diff_rate'])) {
+                    $html .= $display_helper->color($number_helper->format($record['prev_month_diff_rate']) . '%', $record['prev_month_diff_rate']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_beginning_year_diff_value) {
+                $html = '';
+                if (!is_null($record['beginning_year_diff_value'])) {
+                    $html .= $display_helper->color($number_helper->format($record['beginning_year_diff_value']) . '円', $record['beginning_year_diff_value']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_beginning_year_diff_rate) {
+                $html = '';
+                if (!is_null($record['beginning_year_diff_rate'])) {
+                    $html .= $display_helper->color($number_helper->format($record['beginning_year_diff_rate']) . '%', $record['beginning_year_diff_rate']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_deposit_day_ammount) {
+                $html = '';
+                if (!is_null($record['deposit_day_ammount'])) {
+                    $html .= $display_helper->span($number_helper->format($record['deposit_day_ammount']) . '円', $record['deposit_day_ammount']);
+                }
+                if (is_null($record["deposit_id"])) {
+                    $html .= $html_helper->link(
+                        "<i class='fas fa-edit fa-fw'></i>",
+                        ['controller' => 'Deposits', 'action' => ACTION_ADD, '?' => ['deposit_date' => $date]],
+                        ['escapeTitle' => false, 'class' => 'ml-1']
+                    );
+                } else {
+                    $html .= $html_helper->link(
+                        "<i class='fas fa-edit fa-fw'></i>",
+                        ['controller' => 'Deposits', 'action' => ACTION_EDIT, $record["deposit_id"]],
+                        ['escapeTitle' => false, 'class' => 'ml-1']
+                    );
+                }
+                $table_data[] = $html;
+            }
+            if ($include_record_total) {
+                $html = '';
+                if (!is_null($record['record_total'])) {
+                    $html .= $display_helper->span($number_helper->format($record['record_total']) . '円', $record['record_total']);
+                }
+                $table_data[] = $html;
+            }
+            if ($include_account_records) {
+                foreach ($display_data['accounts'] as $account_id => $account_name) {
+                    $html = '';
+                    if (!is_null($record["account{$account_id}_daily_record"])) {
+                        $html .= $display_helper->span($number_helper->format($record["account{$account_id}_daily_record"]) . '円', $record["account{$account_id}_daily_record"]);
+                    }
+                    if (is_null($record["account{$account_id}_daily_record_id"])) {
+                        $html .= $html_helper->link(
+                            "<i class='fas fa-edit fa-fw'></i>",
+                            ['controller' => 'DailyRecords', 'action' => ACTION_ADD, '?' => ['account_id' => $account_id, 'day' => $date]],
+                            ['escapeTitle' => false, 'class' => 'ml-1']
+                        );
+                    } else {
+                        $html .= $html_helper->link(
+                            "<i class='fas fa-edit fa-fw'></i>",
+                            ['controller' => 'DailyRecords', 'action' => ACTION_EDIT, $record["account{$account_id}_daily_record_id"], '?' => ['account_id' => $account_id, 'day' => $date]],
+                            ['escapeTitle' => false, 'class' => 'ml-1']
+                        );
+                    }
+                    $table_data[] = $html;
+                }
+            }
+            if ($include_account_new_link) {
+                $table_data[] = null;
+            }
+            $table_datas[] = $table_data;
+        }
+        $display_data['table_data'] = [
+            'data' => $table_datas,
+            'colHeaders' => $col_headers,
+            'columns' => $columns_formats,
+            'columnSorting' => [
+                'sortEmptyCells' => true,
+            ],
+            'readOnly' => true,
+            'licenseKey' => 'non-commercial-and-evaluation',
+        ];
 
         return $display_data;
     }
