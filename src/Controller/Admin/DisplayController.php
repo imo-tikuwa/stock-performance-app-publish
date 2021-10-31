@@ -417,7 +417,7 @@ EOS;
                     foreach ($display_data['accounts'] as $account_name) {
                         $col_headers[] = $account_name;
                     }
-                } elseif($key === 'account_new_link') {
+                } elseif ($key === 'account_new_link') {
                     $col_headers[] = $html_helper->link(
                         "<i class='fas fa-edit fa-fw ml-2'></i>",
                         ['controller' => 'Accounts', 'action' => ACTION_ADD],

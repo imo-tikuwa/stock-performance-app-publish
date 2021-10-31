@@ -28,14 +28,6 @@ class AccountsControllerTest extends TestCase
     ];
 
     /**
-     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
-     * Set this to false to handle manually
-     *
-     * @var bool
-     */
-    public $autoFixtures = false;
-
-    /**
      * accounts table.
      * @var \App\Model\Table\AccountsTable $Accounts
      */
@@ -79,8 +71,6 @@ class AccountsControllerTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->loadFixtures();
-
         parent::setUp();
         $accounts_config = $this->getTableLocator()->exists('Accounts') ? [] : ['className' => \App\Model\Table\AccountsTable::class];
         /** @var \App\Model\Table\AccountsTable $Accounts */

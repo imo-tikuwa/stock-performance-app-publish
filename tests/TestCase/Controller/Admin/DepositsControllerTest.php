@@ -27,14 +27,6 @@ class DepositsControllerTest extends TestCase
     ];
 
     /**
-     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
-     * Set this to false to handle manually
-     *
-     * @var bool
-     */
-    public $autoFixtures = false;
-
-    /**
      * deposits table.
      * @var \App\Model\Table\DepositsTable $Deposits
      */
@@ -83,8 +75,6 @@ class DepositsControllerTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->loadFixtures();
-
         parent::setUp();
         $deposits_config = $this->getTableLocator()->exists('Deposits') ? [] : ['className' => \App\Model\Table\DepositsTable::class];
         /** @var \App\Model\Table\DepositsTable $Deposits */
@@ -437,7 +427,8 @@ class DepositsControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
-        $this->loadFixtures();
+        $this->teardownFixtures();
+        $this->setupFixtures();
         $this->session([
             'Auth.Admin' => $this->delete_admin
         ]);

@@ -28,14 +28,6 @@ class DailyRecordsControllerTest extends TestCase
     ];
 
     /**
-     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
-     * Set this to false to handle manually
-     *
-     * @var bool
-     */
-    public $autoFixtures = false;
-
-    /**
      * daily_records table.
      * @var \App\Model\Table\DailyRecordsTable $DailyRecords
      */
@@ -84,8 +76,6 @@ class DailyRecordsControllerTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->loadFixtures();
-
         parent::setUp();
         $daily_records_config = $this->getTableLocator()->exists('DailyRecords') ? [] : ['className' => \App\Model\Table\DailyRecordsTable::class];
         /** @var \App\Model\Table\DailyRecordsTable $DailyRecords */
@@ -484,7 +474,8 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
-        $this->loadFixtures();
+        $this->teardownFixtures();
+        $this->setupFixtures();
         $this->session([
             'Auth.Admin' => $this->delete_admin
         ]);

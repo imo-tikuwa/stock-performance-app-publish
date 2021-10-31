@@ -50,7 +50,7 @@ class AppController extends Controller
          */
         //$this->loadComponent('Security');
 
-        $this->viewBuilder()->setHelpers([
+        $this->viewBuilder()->addHelpers([
             'Form' => ['templates' => 'form-templates'],
             'Paginator' => ['templates' => 'paginator-templates']
         ]);

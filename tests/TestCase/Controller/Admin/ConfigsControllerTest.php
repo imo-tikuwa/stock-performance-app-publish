@@ -27,14 +27,6 @@ class ConfigsControllerTest extends TestCase
     ];
 
     /**
-     * By default, all fixtures attached to this class will be truncated and reloaded after each test.
-     * Set this to false to handle manually
-     *
-     * @var bool
-     */
-    public $autoFixtures = false;
-
-    /**
      * configs table.
      * @var \App\Model\Table\ConfigsTable $Configs
      */
@@ -73,8 +65,6 @@ class ConfigsControllerTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->loadFixtures();
-
         parent::setUp();
         $configs_config = $this->getTableLocator()->exists('Configs') ? [] : ['className' => \App\Model\Table\ConfigsTable::class];
         /** @var \App\Model\Table\ConfigsTable $Configs */
