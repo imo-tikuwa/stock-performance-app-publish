@@ -50,7 +50,7 @@ class CreateCalendarsCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadModel('Calendars');
+        $this->Calendars = $this->fetchTable('Calendars');
 
         // 対象年
         $year = $args->getArgument('year');

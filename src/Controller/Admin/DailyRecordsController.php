@@ -32,7 +32,7 @@ class DailyRecordsController extends AppController
             return $result;
         }
 
-        $this->loadModel('Accounts');
+        $this->Accounts = $this->fetchTable('Accounts');
 
         if (in_array($this->getRequest()->getParam('action'), [ACTION_INDEX, ACTION_ADD, ACTION_EDIT], true)) {
             $account_id_list = $this->Accounts->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();

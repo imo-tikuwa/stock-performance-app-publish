@@ -101,14 +101,14 @@ class RecordUtils
 
     /**
      * 引数の営業日時点の資産総額と入金総額取得し実質資産を返す
-     * @param string $deposit_date 営業日付
+     * @param string $business_day 営業日付
      * @return int|null 実質資産
      */
-    private static function calcRecordTotalReal($deposit_date)
+    private static function calcRecordTotalReal($business_day)
     {
         /** @var \App\Model\Table\DailyRecordsTable $daily_records_table */
         $daily_records_table = TableRegistry::getTableLocator()->get('DailyRecords');
-        $query = $daily_records_table->find()->where(['day' => $deposit_date]);
+        $query = $daily_records_table->find()->where(['day' => $business_day]);
         if ($query->count() <= 0) {
             return null;
         }
@@ -117,7 +117,7 @@ class RecordUtils
         /** @var \App\Model\Table\DepositsTable $deposits_table */
         $deposits_table = TableRegistry::getTableLocator()->get('Deposits');
         $target_date_deposit_sum = $deposits_table->find()
-        ->where(['deposit_date <=' => $deposit_date])
+        ->where(['deposit_date <=' => $business_day])
         ->sumOf('deposit_amount');
         $daily_record_sum -= $target_date_deposit_sum;
 

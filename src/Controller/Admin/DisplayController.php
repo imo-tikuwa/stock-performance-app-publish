@@ -38,7 +38,7 @@ class DisplayController extends AppController
         parent::beforeFilter($event);
 
         // 設定取得
-        $this->loadModel('Configs');
+        $this->Configs = $this->fetchTable('Configs');
         $this->config = $this->Configs->get(1);
         $this->set('config', $this->config);
     }
@@ -56,9 +56,9 @@ class DisplayController extends AppController
     public function index()
     {
         $this->viewBuilder()->addHelper('Display');
-        $this->loadModel('Accounts');
-        $this->loadModel('Calendars');
-        $this->loadModel('DailyRecords');
+        $this->Accounts = $this->fetchTable('Accounts');
+        $this->Calendars = $this->fetchTable('Calendars');
+        $this->DailyRecords = $this->fetchTable('DailyRecords');
         $request = $this->getRequest()->getQueryParams();
 
         // 月ごとモードかどうかで画面表示するdatepickerを切り替える
@@ -66,18 +66,14 @@ class DisplayController extends AppController
             if (!isset($request['month'])) {
                 $request['month'] = (new DateTime('first day of this month'))->format('Y-m');
             }
-            $day_from = "{$request['month']}-01";
-            $day_to = (new DateTime("last day of {$request['month']}"))->format('Y-m-d');
         } else {
             // 日付の初期値は現在の月初～月末(未設定不可)
             if (!isset($request['day_from'])) {
                 $request['day_from'] = (new DateTime('first day of this month'))->format('Y-m-d');
             }
-            $day_from = $request['day_from'];
             if (!isset($request['day_to'])) {
                 $request['day_to'] = (new DateTime('last day of this month'))->format('Y-m-d');
             }
-            $day_to = $request['day_to'];
         }
 
         // 単位表示の初期値はON
@@ -416,6 +412,7 @@ EOS;
                 if ($key === 'account_records') {
                     foreach ($display_data['accounts'] as $account_name) {
                         $col_headers[] = $account_name;
+                        $columns_formats[] = $data['columns_format'];
                     }
                 } elseif ($key === 'account_new_link') {
                     $col_headers[] = $html_helper->link(
@@ -423,11 +420,11 @@ EOS;
                         ['controller' => 'Accounts', 'action' => ACTION_ADD],
                         ['escapeTitle' => false]
                     );
+                    $columns_formats[] = $data['columns_format'];
                 } else {
                     $col_headers[] = $data['header_text'];
+                    $columns_formats[] = $data['columns_format'];
                 }
-
-                $columns_formats[] = $data['columns_format'];
             }
         }
         $table_datas = [];

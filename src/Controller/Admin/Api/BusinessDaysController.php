@@ -17,7 +17,7 @@ class BusinessDaysController extends ApiController
      */
     public function index()
     {
-        $this->loadModel('Calendars');
+        $this->Calendars = $this->fetchTable('Calendars');
         $results = $this->Calendars->findBusinessDays();
         $results = Hash::extract($results, '{n}.day');
         $this->set([

@@ -37,10 +37,10 @@ class CreateSbiDailyRecordCommand extends Command
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        $this->loadModel('Accounts');
-        $this->loadModel('Calendars');
-        $this->loadModel('Configs');
-        $this->loadModel('DailyRecords');
+        $this->Accounts = $this->fetchTable('Accounts');
+        $this->Calendars = $this->fetchTable('Calendars');
+        $this->Configs = $this->fetchTable('Configs');
+        $this->DailyRecords = $this->fetchTable('DailyRecords');
 
         /** @var \App\Model\Entity\Account[] $accounts */
         $accounts = $this->Accounts->find()->toArray();

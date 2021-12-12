@@ -36,7 +36,7 @@ class AccountController extends AppController
     {
         parent::beforeFilter($event);
 
-        $this->loadModel('Admins');
+        $this->Admins = $this->fetchTable('Admins');
 
         // 管理者以外はアクセス不可
         if (!AuthUtils::isSuperUser($this->getRequest())) {
