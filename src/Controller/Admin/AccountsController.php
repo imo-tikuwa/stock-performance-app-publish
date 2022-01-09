@@ -120,7 +120,7 @@ class AccountsController extends AppController
             }
         }
         $this->set(compact('account'));
-        $this->render('edit');
+        return $this->render('edit');
     }
 
     /**

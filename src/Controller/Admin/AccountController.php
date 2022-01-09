@@ -156,6 +156,7 @@ class AccountController extends AppController
                 if ($this->Admins->save($admin, ['atomic' => false])) {
                     // 二段階認証 無効→有効 と切り替えたとき二段階認証用のQRコードを生成
                     if ($is_use_otp_dirty && $admin->use_otp === true) {
+                        // @phpstan-ignore-next-line
                         $qr_url = $google_authenticator->getQRCodeGoogleUrl(AuthUtils::getTwoFactorQrName($admin), $otp_secret, SITE_NAME);
                         $this->getRequest()->getSession()->write('qr_url', $qr_url);
                     }
@@ -169,7 +170,7 @@ class AccountController extends AppController
             }
         }
         $this->set(compact('admin'));
-        $this->render('edit');
+        return $this->render('edit');
     }
 
     /**

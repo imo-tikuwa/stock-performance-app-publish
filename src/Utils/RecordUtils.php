@@ -28,6 +28,7 @@ class RecordUtils
         if (is_null($last_business_day)) {
             return null;
         }
+        assert(is_string($last_business_day));
 
         // 前営業日が存在する場合は、その日の資産総額と入金総額から実質資産を取得
         return self::calcRecordTotalReal($last_business_day);
@@ -56,6 +57,7 @@ class RecordUtils
         if (is_null($last_business_day)) {
             // 見つからない場合は当月の最初の営業日で計算する
             $current_month_first_day_str = $last_month_last_day->modify('+1 days')->format('Y-m-d');
+            /** @var \App\Model\Entity\Calendar|null $init_calendar */
             $init_calendar = $calendars_table->find()
             ->where(['day >=' => $current_month_first_day_str, 'is_holiday' => false])
             ->order(['day' => 'asc'])
@@ -67,6 +69,7 @@ class RecordUtils
                 return null;
             }
         }
+        assert(is_string($last_business_day));
 
         // 前月の最終営業日が存在する場合は、その日の資産総額と入金総額から実質資産を取得
         return self::calcRecordTotalReal($last_business_day);
@@ -94,6 +97,7 @@ class RecordUtils
         if (is_null($year_first_business_day)) {
             return null;
         }
+        assert(is_string($year_first_business_day));
 
         // 年初の営業日が存在する場合は、その日の資産総額と入金総額から実質資産を取得
         return self::calcRecordTotalReal($year_first_business_day);

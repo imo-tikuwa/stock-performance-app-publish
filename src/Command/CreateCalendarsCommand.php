@@ -63,6 +63,7 @@ class CreateCalendarsCommand extends Command
 
         // 日本の祝日を取得。レスポンスが200番以外の場合は終了
         $ch = curl_init("https://holidays-jp.github.io/api/v1/{$year}/date.json");
+        assert($ch !== false);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -73,6 +74,7 @@ class CreateCalendarsCommand extends Command
             $io->abort('holidays not found.');
         }
         curl_close($ch);
+        assert(is_string($holidays));
         $holidays = json_decode($holidays, true);
 
         // 1日1日からループして12月31日までの営業日データを登録する

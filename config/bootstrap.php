@@ -103,6 +103,9 @@ if (Configure::read('debug')) {
     Configure::write('Cache._cake_routes_.duration', '+2 seconds');
 }
 
+// デバッグモードのときassertの検証を有効化
+assert_options(ASSERT_ACTIVE, Configure::read('debug'));
+
 /*
  * Set the default server timezone. Using UTC makes time calculations / conversions easier.
  * Check http://php.net/manual/en/timezones.php for list of valid timezone strings.

@@ -24,6 +24,7 @@ class ConfigsController extends AppController
         if (empty($config)) {
             $config = $this->Configs->newEmptyEntity();
         }
+        assert($config instanceof \App\Model\Entity\Config);
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $config = $this->Configs->patchEntity($config, $this->getRequest()->getData());
             if ($config->hasErrors()) {
@@ -45,6 +46,6 @@ class ConfigsController extends AppController
             }
         }
         $this->set(compact('config'));
-        $this->render('edit');
+        return $this->render('edit');
     }
 }

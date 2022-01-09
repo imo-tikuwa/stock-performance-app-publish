@@ -68,6 +68,8 @@ class CreateSbiDailyRecordCommand extends Command
 
     /**
      * 何らかのエラーがあったときの共通エラーメッセージ
+     *
+     * @var string
      */
     private static $abort_common_message = "\nStop the CreateSbiDailyRecordCommand process.";
 
@@ -106,10 +108,10 @@ class CreateSbiDailyRecordCommand extends Command
             } elseif (!file_exists($config->chromedriver_path)) {
                 $io->abort('ChromeDriver path is incorrect.' . self::$abort_common_message);
             }
+            putenv('webdriver.chrome.driver=' . $config->chromedriver_path);
         } catch (InvalidPrimaryKeyException $e) {
             $io->abort('InvalidPrimaryKeyException was thrown. The configs were not found.' . self::$abort_common_message);
         }
-        putenv('webdriver.chrome.driver=' . $config->chromedriver_path);
 
         // SBI証券のログインID/PWを取得、確認
         $sbi_login_id = getenv('SBI_LOGIN_ID');
@@ -150,7 +152,7 @@ class CreateSbiDailyRecordCommand extends Command
                     foreach ($driver->findElements(WebDriverBy::cssSelector($tr_selector_path)) as $element) {
                         if ($element->findElement(WebDriverBy::cssSelector('td:nth-child(1)'))->getText() == '計') {
                             $record = $element->findElement(WebDriverBy::cssSelector('td:nth-child(2) > div > b'))->getText();
-                            if (!is_null($record)) {
+                            if (strlen($record) > 0) {
                                 $record = (int)str_replace(',', '', $record);
                                 break 2;
                             }
@@ -172,6 +174,7 @@ class CreateSbiDailyRecordCommand extends Command
         if (is_null($entity)) {
             $entity = $this->DailyRecords->newEmptyEntity();
         }
+        assert($entity instanceof \App\Model\Entity\DailyRecord);
         $entity = $this->DailyRecords->patchEntity($entity, [
             'account_id' => $account_id,
             'day' => $day,

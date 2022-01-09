@@ -14,6 +14,7 @@ class CsvUtils
     public static function parseSjisCsv($file)
     {
         $str = file_get_contents($file);
+        assert($str !== false);
         $is_win = strpos(PHP_OS, "WIN") === 0;
 
         // Windowsの場合は Shift_JIS、Unix系は UTF-8で処理
@@ -26,6 +27,7 @@ class CsvUtils
 
         $result = [];
         $fp = fopen("php://temp", "r+");
+        assert($fp !== false);
         fwrite($fp, str_replace(["\r\n", "\r"], "\n", $str));
         rewind($fp);
         while ($row = fgetcsv($fp)) {
@@ -55,7 +57,9 @@ class CsvUtils
         }
         $result = [];
         $fp = fopen($file, "r+");
+        assert($fp !== false);
         while ($row = fgetcsv($fp)) {
+            assert($row !== false);
             $result[] = $row;
         }
         fclose($fp);

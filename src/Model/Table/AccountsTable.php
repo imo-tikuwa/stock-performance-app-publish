@@ -115,7 +115,9 @@ class AccountsTable extends AppTable
      */
     public function patchEntity(EntityInterface $entity, array $data, array $options = []): EntityInterface
     {
-        return parent::patchEntity($entity, $data, $options);
+        $entity = parent::patchEntity($entity, $data, $options);
+        assert($entity instanceof \App\Model\Entity\Account);
+        return $entity;
     }
 
     /**

@@ -130,8 +130,12 @@ class DailyRecordsController extends AppController
 
         // 分析画面から遷移してきたとき初期表示として口座と日付をセット
         if ($this->getRequest()->is(['get']) && $this->getRequest()->getParam('action') == 'add' && !is_null($this->getRequest()->getQuery('account_id')) && !is_null($this->getRequest()->getQuery('day'))) {
-            $daily_record->account_id = $this->getRequest()->getQuery('account_id');
-            $daily_record->day = FrozenDate::parse($this->getRequest()->getQuery('day'));
+            $account_id = (int)$this->getRequest()->getQuery('account_id');
+            $day = $this->getRequest()->getQuery('day');
+            assert(is_integer($account_id));
+            assert(is_string($day));
+            $daily_record->account_id = $account_id;
+            $daily_record->day = FrozenDate::parse($day);
         }
 
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
@@ -159,7 +163,7 @@ class DailyRecordsController extends AppController
             }
         }
         $this->set(compact('daily_record'));
-        $this->render('edit');
+        return $this->render('edit');
     }
 
     /**

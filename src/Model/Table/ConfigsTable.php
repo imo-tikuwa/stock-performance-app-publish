@@ -184,6 +184,9 @@ class ConfigsTable extends AppTable
         if (!isset($data['display_setting'])) {
             $data['display_setting'] = null;
         }
-        return parent::patchEntity($entity, $data, $options);
+
+        $entity = parent::patchEntity($entity, $data, $options);
+        assert($entity instanceof \App\Model\Entity\Config);
+        return $entity;
     }
 }

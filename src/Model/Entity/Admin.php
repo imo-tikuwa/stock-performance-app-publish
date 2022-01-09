@@ -26,7 +26,7 @@ class Admin extends AppEntity
      * be mass assigned. For security purposes, it is advised to set '*' to false
      * (or remove it), and explicitly make individual fields accessible as needed.
      *
-     * @var array
+     * @var array<bool>
      */
     protected $_accessible = [
         'name' => true,
@@ -43,7 +43,7 @@ class Admin extends AppEntity
     /**
      * Fields that are excluded from JSON versions of the entity.
      *
-     * @var array
+     * @var array<string>
      */
     protected $_hidden = [
         'password',
@@ -61,7 +61,9 @@ class Admin extends AppEntity
             return null;
         }
 
-        return Encrypter::encrypt($password);
+        $encrypted_password = Encrypter::encrypt($password);
+        assert($encrypted_password !== false);
+        return $encrypted_password;
     }
 
     /**
@@ -74,7 +76,9 @@ class Admin extends AppEntity
             return null;
         }
 
-        return Encrypter::decrypt($this->password);
+        $decrypted_password = Encrypter::decrypt($this->password);
+        assert($decrypted_password !== false);
+        return $decrypted_password;
     }
 
     /**

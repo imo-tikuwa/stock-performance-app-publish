@@ -123,7 +123,7 @@ class ExcelImportForm extends Form
 
     /**
      * エラーメッセージの配列を取得する
-     * @return array エラーメッセージの配列
+     * @return array|null エラーメッセージの配列
      */
     public function getErrorMessages()
     {
@@ -131,6 +131,7 @@ class ExcelImportForm extends Form
         if (!$errors) {
             return null;
         }
+
         $error_messages = [];
         foreach ($errors as $error) {
             $error_messages[] = $this->getEachErrorMessage($error);
@@ -146,6 +147,7 @@ class ExcelImportForm extends Form
      */
     private function getEachErrorMessage($each_error)
     {
+        // @phpstan-ignore-next-line
         foreach ($each_error as $error_obj) {
             if (is_array($error_obj)) {
                 return $this->getEachErrorMessage($error_obj);

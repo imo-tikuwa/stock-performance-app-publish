@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use Cake\Core\Exception\CakeException;
 use Cake\Utility\Inflector;
+use Exception;
 use Intervention\Image\ImageManagerStatic;
 
 /**
@@ -17,10 +18,11 @@ trait FormFileTrait
     /**
      * Ajaxファイルアップロード処理
      * @param string $input_name input[type=file]の要素名
-     * @return static
+     * @return \Cake\Http\Response json response
      */
     public function fileUpload($input_name = null)
     {
+        /** @var \Cake\Http\Response $response */
         $response = $this->getResponse();
         $response_data = [];
         try {
@@ -62,7 +64,7 @@ trait FormFileTrait
             }
 
             // ファイルアップロード
-            $new_file_key = sha1(uniqid(rand()));
+            $new_file_key = sha1(uniqid((string)rand()));
             $cur_name = $new_file_key . "." . $extension;
             $upload_to = UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $cur_name;
             if (!rename($tmp_name, $upload_to)) {
@@ -75,13 +77,15 @@ trait FormFileTrait
                 $thumbnail_width = (isset($file_upload_options['thumbnail_width']) && is_numeric($file_upload_options['thumbnail_width'])) ? $file_upload_options['thumbnail_width'] : null;
                 $thumbnail_height = (isset($file_upload_options['thumbnail_height']) && is_numeric($file_upload_options['thumbnail_height'])) ? $file_upload_options['thumbnail_height'] : null;
                 $thumbnail_aspect_ratio_keep = (isset($file_upload_options['thumbnail_aspect_ratio_keep']) && $file_upload_options['thumbnail_aspect_ratio_keep'] === true) ? true : false;
-                $thumbnail_quality = (isset($file_upload_options['thumbnail_quality']) && is_numeric($file_upload_options['thumbnail_quality'])) ? $file_upload_options['thumbnail_quality'] : 90;
+                $thumbnail_quality = (isset($file_upload_options['thumbnail_quality']) && is_numeric($file_upload_options['thumbnail_quality'])) ? (int)$file_upload_options['thumbnail_quality'] : 90;
                 $thumb_to = UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $new_file_key . "_thumb." . $extension;
                 if ($thumbnail_aspect_ratio_keep) {
+                    // @phpstan-ignore-next-line
                     ImageManagerStatic::make($upload_to)->resize($thumbnail_width, $thumbnail_height, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save($thumb_to, $thumbnail_quality);
                 } else {
+                    // @phpstan-ignore-next-line
                     ImageManagerStatic::make($upload_to)->resize($thumbnail_width, $thumbnail_height)->save($thumb_to, $thumbnail_quality);
                 }
             }
@@ -125,7 +129,11 @@ trait FormFileTrait
             $response = $response->withStatus(400);
         }
 
-        return $response->withType('json')->withStringBody(json_encode($response_data));
+        $response_string = json_encode($response_data);
+        assert($response_string !== false);
+        $response = $response->withType('json')->withStringBody($response_string);
+
+        return $response;
     }
 
     /**
@@ -136,10 +144,11 @@ trait FormFileTrait
      *
      * @param string $input_name input[type=file]の要素名
      * @throws Exception
-     * @return static
+     * @return \Cake\Http\Response json response
      */
     public function fileDelete($input_name = null)
     {
+        /** @var \Cake\Http\Response $response */
         $response = $this->getResponse();
         $response_data = [];
         try {
@@ -168,6 +177,10 @@ trait FormFileTrait
             $response = $response->withStatus(400);
         }
 
-        return $response->withType('json')->withStringBody(json_encode($response_data));
+        $response_string = json_encode($response_data);
+        assert($response_string !== false);
+        $response = $response->withType('json')->withStringBody($response_string);
+
+        return $response;
     }
 }

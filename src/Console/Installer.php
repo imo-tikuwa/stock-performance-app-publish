@@ -152,7 +152,9 @@ class Installer
         };
 
         $walker = function ($dir) use (&$walker, $changePerms) {
-            $files = array_diff(scandir($dir), ['.', '..']);
+            $dirFiles = scandir($dir);
+            assert($dirFiles !== false);
+            $files = array_diff($dirFiles, ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;
 
@@ -196,7 +198,7 @@ class Installer
     {
         $config = $dir . '/config/' . $file;
         $content = file_get_contents($config);
-
+        assert($content !== false);
         $content = str_replace('__SALT__', $newKey, $content, $count);
 
         if ($count == 0) {
@@ -227,6 +229,7 @@ class Installer
     {
         $config = $dir . '/config/' . $file;
         $content = file_get_contents($config);
+        assert($content !== false);
         $content = str_replace('__APP_NAME__', $appName, $content, $count);
 
         if ($count == 0) {

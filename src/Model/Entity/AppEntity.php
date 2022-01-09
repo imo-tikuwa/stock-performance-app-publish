@@ -13,7 +13,7 @@ class AppEntity extends Entity
      *
      * 関連テーブルのエラーはメッセージの先頭にテーブルの項目名と番号を付加する
      *
-     * @return array エラーメッセージの配列
+     * @return array|null エラーメッセージの配列
      */
     public function getErrorMessages()
     {
@@ -22,6 +22,7 @@ class AppEntity extends Entity
         }
 
         $error_messages = [];
+        // @phpstan-ignore-next-line
         $related_entity_names = $this->related_entity_names;
         foreach ($this->getErrors() as $field_name => $error) {
             if (is_array($related_entity_names) && array_key_exists($field_name, $related_entity_names)) {
@@ -46,6 +47,7 @@ class AppEntity extends Entity
         foreach ($related_errors as $child_index => $related_error) {
             foreach ($related_error as $each_error) {
                 $child_num = $child_index + 1;
+                // @phpstan-ignore-next-line
                 $error_messages[] = "{$entity_name}{$child_num} - " . $this->getEachErrorMessage($each_error);
             }
         }
@@ -60,6 +62,7 @@ class AppEntity extends Entity
      */
     private function getEachErrorMessage($each_error)
     {
+        // @phpstan-ignore-next-line
         foreach ($each_error as $error_obj) {
             if (is_array($error_obj)) {
                 return $this->getEachErrorMessage($error_obj);

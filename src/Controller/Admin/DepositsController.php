@@ -95,7 +95,9 @@ class DepositsController extends AppController
 
         // 分析画面から遷移してきたとき初期表示として入金日をセット
         if ($this->getRequest()->is(['get']) && $this->getRequest()->getParam('action') == 'add' && !is_null($this->getRequest()->getQuery('deposit_date'))) {
-            $deposit->deposit_date = FrozenDate::parse($this->getRequest()->getQuery('deposit_date'));
+            $deposit_date = $this->getRequest()->getQuery('deposit_date');
+            assert(is_string($deposit_date));
+            $deposit->deposit_date = FrozenDate::parse($deposit_date);
         }
 
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
@@ -119,7 +121,7 @@ class DepositsController extends AppController
             }
         }
         $this->set(compact('deposit'));
-        $this->render('edit');
+        return $this->render('edit');
     }
 
     /**

@@ -45,6 +45,8 @@ class DisplayController extends AppController
 
     /**
      * 設定
+     *
+     * @var \App\Model\Entity\Config $config
      */
     public $config;
 
@@ -66,6 +68,8 @@ class DisplayController extends AppController
             if (!isset($request['month'])) {
                 $request['month'] = (new DateTime('first day of this month'))->format('Y-m');
             }
+            $request['day_from'] = "{$request['month']}-01";
+            $request['day_to'] = (new DateTime("last day of {$request['month']}"))->format('Y-m-d');
         } else {
             // 日付の初期値は現在の月初～月末(未設定不可)
             if (!isset($request['day_from'])) {
@@ -75,6 +79,8 @@ class DisplayController extends AppController
                 $request['day_to'] = (new DateTime('last day of this month'))->format('Y-m-d');
             }
         }
+        assert(isset($request['day_from']));
+        assert(isset($request['day_to']));
 
         // 単位表示の初期値はON
         if (!isset($request['display_unit'])) {
@@ -93,7 +99,7 @@ class DisplayController extends AppController
     /**
      * 画面表示で使用するデータを作成する
      * @param array $request リクエスト情報
-     * @return array
+     * @return array|\Cake\Http\Response|null
      */
     private function createDisplayData($request)
     {
@@ -198,6 +204,7 @@ order by
     calendars.day asc
 EOS;
         $deposits = $connection->execute($sql)->fetchAll('assoc');
+        assert($deposits !== false);
         $deposits = Hash::combine($deposits, '{n}.day', '{n}');
         // 上のwhileループ内で作成した証券口座合計(record_total)に入っている金額に同一日付の入金総額を減算することで実質資産を作成
         foreach ($display_data['records'] as $date => $record) {
@@ -276,12 +283,13 @@ EOS;
         // X軸についてTimeScaleで処理すると休業日の分だけポイント間が開いてしまうため文字列として処理する
         $dates = array_keys(Hash::get($display_data, 'records'));
         $dates = array_map(function ($date) {
-            return (new DateTime($date))->format('n/j');
+            return (new DateTime($date))->format('n/j'); // @phpstan-ignore-line
         }, $dates);
 
         // 資産額の最大値の桁数に応じて単位テキストの作成およびチャート用の除算を行う
         $amount_path = $include_deposit ? 'records.{s}.record_total' : 'records.{s}.record_total_real';
         $amount_values = Hash::extract($display_data, $amount_path);
+        assert(is_array($amount_values));
         $max_amount_digits = strlen((string)max($amount_values));
         $y_unit = '';
         if ($display_unit) {

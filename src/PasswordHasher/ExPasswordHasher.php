@@ -20,7 +20,7 @@ class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherI
      * - `hashType` - Hashing algo to use. Valid values are those supported by `$algo`
      *   argument of `password_hash()`. Defaults to null
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
         'hashType' => null,
@@ -32,11 +32,13 @@ class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherI
      * @see \Authentication\PasswordHasher\PasswordHasherInterface::hash()
      *
      * @param string $password Plain text password to hash.
-     * @return string|false Either the password hash string or false
+     * @return string Either the password hash string or false
      */
     public function hash($password): string
     {
-        return Encrypter::encrypt($password);
+        $encrypted_password = Encrypter::encrypt($password);
+        assert($encrypted_password !== false);
+        return $encrypted_password;
     }
 
     /**

@@ -62,7 +62,8 @@ class AppView extends View
                     $checked = true;
                 }
                 $html .= "<div class=\"form-check form-check-inline\">";
-                $html .= $this->Form->checkbox("privilege.{$controller}[]", [
+                /** @var string $checkbox */
+                $checkbox = $this->Form->checkbox("privilege.{$controller}[]", [
                     'value' => $role_key,
                     'id' => $id,
                     'class' => 'form-check-input',
@@ -70,6 +71,7 @@ class AppView extends View
                     'hiddenField' => false,
                     'checked' => $checked,
                 ]);
+                $html .= $checkbox;
                 $badge_class = _code("SystemProperties.RoleBadgeClass.{$role_key}");
                 $html .= "<label class=\"form-check-label rounded-0 {$badge_class}\" for=\"{$id}\">{$role_name}</label>";
                 $html .= "</div>";

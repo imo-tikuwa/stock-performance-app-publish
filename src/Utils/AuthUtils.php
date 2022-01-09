@@ -37,7 +37,7 @@ class AuthUtils
      * リクエスト先へのアクセスに必要な権限を持っているかチェック
      *
      * @param ServerRequest $request リクエスト情報
-     * @param string $properties 権限チェックプロパティ $requestオブジェクト以外の権限チェックをしたいとき
+     * @param array $properties  権限チェックプロパティ $requestオブジェクト以外の権限チェックをしたいとき
      *                           'controller' => '[コントローラ名]',
      *                           'action' => '[アクション名]'
      *                           を配列でセットする

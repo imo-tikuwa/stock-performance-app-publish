@@ -13,12 +13,14 @@ $label_class = 'item-label col-form-label col-form-label-sm';
 $this->Form->setTemplates([
   'nestingLabel' => '{{hidden}}{{input}}<label class="form-check-label col-form-label col-form-label-sm" {{attrs}}>{{text}}</label>'
 ]);
-$password_value = $this->getRequest()->is(['patch', 'post', 'put']) ? $this->getRequest()->getParam('password') : $admin->raw_password;
+$password_value = ($this->getRequest()->getParam('action') === 'edit' && $this->getRequest()->is(['get'])) ? $admin->raw_password : $this->getRequest()->getParam('password');
 ?>
 <div class="col-md-12 mb-12">
   <div class="card rounded-0">
     <div class="card-body">
       <?= $this->Form->create($admin) ?>
+      <!-- dummy input. -->
+      <input type="password" class="d-none" />
       <div class="row">
         <div class="col-lg-3 col-md-6 col-sm-12">
           <div class="form-group">

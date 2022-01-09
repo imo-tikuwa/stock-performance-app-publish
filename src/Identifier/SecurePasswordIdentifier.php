@@ -53,7 +53,7 @@ class SecurePasswordIdentifier extends PasswordIdentifier
     /**
      * @inheritdoc
      */
-    public function identify(array $data)
+    public function identify(array $data) // @phpstan-ignore-line
     {
         if (!isset($data[self::CREDENTIAL_USERNAME])) {
             return null;

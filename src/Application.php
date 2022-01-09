@@ -141,7 +141,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
      * @param ServerRequestInterface $request Representation of an incoming, server-side HTTP request.
-     * @return \Authentication\Authenticator\AuthenticatorInterface|null
+     * @return \Authentication\AuthenticationServiceInterface
      */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
@@ -155,6 +155,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             IdentifierInterface::CREDENTIAL_USERNAME => 'mail',
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ];
+        /** @var \Cake\Http\ServerRequest $request */
         $params = Router::parseRequest($request);
         if ($params['action'] === 'secureLogin') {
             $fields[GOOGLE_AUTHENTICATOR_SECRET_INPUT_NAME] = GOOGLE_AUTHENTICATOR_SECRET_INPUT_NAME;

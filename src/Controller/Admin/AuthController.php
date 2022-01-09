@@ -46,7 +46,7 @@ class AuthController extends AppController
 
     /**
      * 共通ログイン処理
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|null
      */
     private function _login()
     {
@@ -56,12 +56,11 @@ class AuthController extends AppController
             $target = $this->Authentication->getLoginRedirect() ?? '/admin/top';
 
             return $this->redirect($target);
-        }
-        if ($this->getRequest()->is('post') && !$result->isValid()) {
+        } elseif ($this->getRequest()->is('post')) {
             $error_message = ($this->getRequest()->getParam('action') === 'secureLogin') ? 'ログインID/パスワード/認証コードのいずれかが正しくありません。' : 'ログインID/パスワードのいずれかが正しくありません。';
             $this->Flash->error($error_message);
         }
-        $this->render('login');
+        return $this->render('login');
     }
 
     /**

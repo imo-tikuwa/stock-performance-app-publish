@@ -23,10 +23,14 @@ class Encrypter
     public static function encrypt($plain_password = '')
     {
         $iv_size = openssl_cipher_iv_length(self::METHOD);
+        assert($iv_size !== false);
+
         $iv = openssl_random_pseudo_bytes($iv_size);
+        assert($iv !== false);
 
         // 暗号化
         $encrypted_password = openssl_encrypt($plain_password, self::METHOD, Security::getSalt(), OPENSSL_RAW_DATA, $iv);
+        assert($encrypted_password !== false);
 
         return base64_encode($iv) . ':' . base64_encode($encrypted_password);
     }
@@ -44,6 +48,9 @@ class Encrypter
         $encrypted = base64_decode($password_data[1]);
 
         // 復号化
-        return openssl_decrypt($encrypted, self::METHOD, Security::getSalt(), OPENSSL_RAW_DATA, $iv);
+        $decrypted_password = openssl_decrypt($encrypted, self::METHOD, Security::getSalt(), OPENSSL_RAW_DATA, $iv);
+        assert($decrypted_password !== false);
+
+        return $decrypted_password;
     }
 }
