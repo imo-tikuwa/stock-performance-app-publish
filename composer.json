@@ -61,19 +61,5 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true
-    },
-    "repositories": {
-        "imo-tikuwa/cakephp-api-generator": {
-            "type": "vcs",
-            "url": "https://github.com/imo-tikuwa/cakephp-api-generator"
-        },
-        "imo-tikuwa/cakephp-erd-generator": {
-            "type": "vcs",
-            "url": "https://github.com/imo-tikuwa/cakephp-erd-generator"
-        },
-        "imo-tikuwa/cakephp-admin-baker": {
-            "type": "vcs",
-            "url": "https://github.com/imo-tikuwa/cakephp-admin-baker"
-        }
     }
 }
