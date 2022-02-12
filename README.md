@@ -10,8 +10,11 @@
 
 ![image](https://user-images.githubusercontent.com/48991931/136362481-2c875d54-9c25-4966-bd78-70686d3459ed.png)
 
-## セットアップ手順
-以下はWindowsPCにおける手順になります。
+## Dockerを使うセットアップ手順
+[docker-stock-performance-app-publish](https://github.com/imo-tikuwa/docker-stock-performance-app-publish)参照
+
+## Dockerを使わないセットアップ手順
+以下はWindowsPCにおける手順になります。ローカルもしくは外部に接続可能なMySQLサーバーが必要です。
 1. リポジトリをクローン
 ```
 git clone https://github.com/imo-tikuwa/stock-performance-app-publish.git
