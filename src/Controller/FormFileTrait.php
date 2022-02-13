@@ -67,9 +67,10 @@ trait FormFileTrait
             $new_file_key = sha1(uniqid((string)rand()));
             $cur_name = $new_file_key . "." . $extension;
             $upload_to = UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $cur_name;
-            if (!rename($tmp_name, $upload_to)) {
+            if (!copy($tmp_name, $upload_to)) {
                 throw new CakeException("ファイルのアップロードに失敗しました。Upload Failed.");
             }
+            unlink($tmp_name);
 
             // アップロードされたファイルが画像かつ、サムネイル生成のオプションが有効なときサムネ生成
             if (in_array($extension, ['png', 'jpg', 'jpeg', 'gif'], true) && _code("FileUploadOptions.{$this->name}.{$input_name}.create_thumbnail", false)) {

@@ -57,7 +57,7 @@ class Installer
 
         $rootDir = dirname(dirname(__DIR__));
 
-        static::createAppLocalConfig($rootDir, $io);
+        // static::createAppLocalConfig($rootDir, $io);
         static::createWritableDirectories($rootDir, $io);
 
         static::setFolderPermissions($rootDir, $io);
