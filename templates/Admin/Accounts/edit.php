@@ -6,14 +6,14 @@
 $button_name = (!empty($account) && !$account->isNew()) ? "更新" : "登録";
 $this->assign('title', "口座{$button_name}");
 ?>
-<div class="col-md-12 mb-12">
+<div class="col">
   <div class="card">
     <div class="card-body">
       <?= $this->Form->create($account) ?>
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'name', 'label' => '口座名', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'name', 'label' => '口座名', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <?= $this->Form->control('name', [
               'type' => 'text',
               'class' => 'form-control form-control-sm rounded-0 ',
@@ -24,8 +24,8 @@ $this->assign('title', "口座{$button_name}");
           </div>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'init_record', 'label' => '初期資産額', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'init_record', 'label' => '初期資産額', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <div class="input number">
               <div class="input-group input-group-sm">
                 <?= $this->Form->text('init_record', [
@@ -39,7 +39,7 @@ $this->assign('title', "口座{$button_name}");
                   'required' => false,
                   'error' => false
                 ]); ?>
-                <div class="input-group-append"><span class="input-group-text rounded-0">円</span></div>
+                <div class="input-group-text">円</div>
               </div>
             </div>
           </div>

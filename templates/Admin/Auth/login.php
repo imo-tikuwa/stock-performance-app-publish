@@ -17,35 +17,38 @@ $is_secure_login = ($this->getRequest()->getParam('action') === 'secureLogin');
   <?= $this->fetch('meta') ?>
   <?= $this->fetch('css') ?>
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <b><?= SITE_NAME ?></b> Login
-  </div>
-  <div class="card">
-    <div class="card-body login-card-body">
+<body>
+<main class="d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="card" style="width: 400px">
+    <div class="card-header">
+      <div class="login-logo">
+        <b><?= SITE_NAME ?></b> Login
+      </div>
+    </div>
+    <div class="card-body">
       <?= $this->Flash->render() ?>
 
       <?= $this->Form->create(null) ?>
-        <div class="form-group has-feedback">
+        <div class="mb-3 has-feedback">
           <?= $this->Form->control('mail', ['id' => 'login-mail', 'class' => 'form-control rounded-0', 'label' => 'ログインID']) ?>
         </div>
-        <div class="form-group has-feedback">
+        <div class="mb-3 has-feedback">
           <?= $this->Form->control('password', ['id' => 'login-password', 'class' => 'form-control rounded-0', 'label' => 'パスワード']) ?>
         </div>
         <?php if ($is_secure_login) { ?>
-          <div class="form-group has-feedback">
+          <div class="mb-3 has-feedback">
             <?= $this->Form->control(GOOGLE_AUTHENTICATOR_SECRET_INPUT_NAME, ['id' => 'login-secret', 'type' => 'text', 'class' => 'form-control rounded-0', 'label' => '認証コード', 'maxlength' => 6]) ?>
           </div>
         <?php } ?>
         <div class="row">
           <div class="col-12">
-            <button type="submit" class="btn btn-primary btn-block btn-flat">ログイン</button>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-flat">ログイン</button>
+            </div>
           </div>
-          <!-- /.col -->
         </div>
         <div class="row">
-          <div class="col-12 mt-2 text-right">
+          <div class="col-12 mt-2 text-end">
             <?php if (!$is_secure_login) { ?>
               <?= $this->Html->link('二段階認証が有効なアカウントはこちら', ['action' => 'secureLogin', '?' => $this->getRequest()->getQueryParams()]) ?>
             <?php } else { ?>
@@ -56,9 +59,8 @@ $is_secure_login = ($this->getRequest()->getParam('action') === 'secureLogin');
       <?= $this->Form->end() ?>
 
     </div>
-    <!-- /.login-card-body -->
   </div>
-</div>
+</main>
 <?= $this->Html->script('vendor/bundle') ?>
 <?= $this->fetch('script') ?>
 </body>

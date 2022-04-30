@@ -9,7 +9,7 @@ use App\Utils\AuthUtils;
 
 $this->assign('title', "アカウント/権限");
 // $text_class = '';
-$table_class = 'table table-hover text-sm text-nowrap';
+$table_class = 'table table-sm table-hover text-sm text-nowrap';
 $input_class = 'form-control form-control-sm rounded-0';
 $btn_class = 'btn btn-sm btn-flat btn-outline-secondary';
 $this->Form->setTemplates([
@@ -17,13 +17,15 @@ $this->Form->setTemplates([
 ]);
 $google_authenticator = new PHPGangsta_GoogleAuthenticator();
 ?>
-<div class="col-md-12 mb-12">
+<div class="col">
   <div class="card rounded-0">
-    <div class="card-header">
-      <div class="form-inline">
-        <div class="btn-group mr-2" role="group">
-          <a class="<?= h($btn_class) ?>" href="<?= $this->Url->build(['action' => 'add']) ?>">新規登録</a>
-          <a class="<?= h($btn_class) ?>" href="javascript:void(0);" data-toggle="modal" data-target="#accounts-search-form-modal">検索</a>
+    <div class="card-header bg-body">
+      <div class="row">
+        <div class="col-auto">
+          <div class="btn-group me-2" role="group">
+            <a class="<?= h($btn_class) ?>" href="<?= $this->Url->build(['action' => 'add']) ?>">新規登録</a>
+            <a class="<?= h($btn_class) ?>" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#accounts-search-form-modal">検索</a>
+          </div>
         </div>
       </div>
     </div>
@@ -52,20 +54,16 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
               <td><?= h($account?->created?->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?></td>
               <td><?= h($account?->modified?->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?></td>
               <td class="actions">
-                <div class="btn-group" role="group">
-                  <button id="btnGroupDrop<?= $account->id ?>" type="button" class="<?= h($btn_class) ?> dropdown-toggle index-dropdown-toggle" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"></button>
-                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop<?= $account->id ?>">
-                    <?= $this->Html->link('編集', ['action' => ACTION_EDIT, $account->id], ['class' => 'dropdown-item']) ?>
-                    <?php if ($account->use_otp && is_string($account->otp_secret) && strlen($account->otp_secret) === GOOGLE_AUTHENTICATOR_SECRET_KEY_LEN) { ?>
-                      <?= $this->Html->link('二段階認証用QRコード再表示', 'javascript:void(0);', [
-                        'class' => 'dropdown-item redraw-qr',
-                        'data-account-id' => $account->id,
-                        'data-qr-url' => $google_authenticator->getQRCodeGoogleUrl(AuthUtils::getTwoFactorQrName($account), $account->otp_secret, SITE_NAME)
-                      ]) ?>
-                    <?php } ?>
-                    <?= $this->Form->postLink('削除', ['action' => ACTION_DELETE, $account->id], ['class' => 'dropdown-item', 'confirm' => __('ID {0} を削除します。よろしいですか？', $account->id)]) ?>
-                  </div>
-                </div>
+                <?= $this->Html->link('<i title="編集" class="fas fa-pen me-1"></i>', ['action' => ACTION_EDIT, $account->id], ['escape' => false]) ?>
+                <?php if ($account->use_otp && is_string($account->otp_secret) && strlen($account->otp_secret) === GOOGLE_AUTHENTICATOR_SECRET_KEY_LEN) { ?>
+                  <?= $this->Html->link('<i title="二段階認証用QRコード再表示" class="fas fa-qrcode me-1"></i>', 'javascript:void(0);', [
+                    'class' => 'redraw-qr',
+                    'data-account-id' => $account->id,
+                    'data-qr-url' => $google_authenticator->getQRCodeGoogleUrl(AuthUtils::getTwoFactorQrName($account), $account->otp_secret, SITE_NAME),
+                    'escape' => false
+                  ]) ?>
+                <?php } ?>
+                <?= $this->Form->postLink('<i title="削除" class="fas fa-trash"></i>', ['action' => ACTION_DELETE, $account->id], ['escape' => false, 'confirm' => __('ID {0} を削除します。よろしいですか？', $account->id)]) ?>
               </td>
             </tr>
           <?php } ?>
@@ -81,9 +79,7 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
     <div class="modal-content rounded-0">
       <div class="modal-header">
         <h5 class="modal-title">二段階認証用QRコード再表示</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
       </div>
       <div class="modal-body">
         <p id="redraw-qr-target-id" class="mb-0"></p>
@@ -91,7 +87,7 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
         <p class="text-center mt-2"><img id="redraw-qr-img" class="p-2 border" src="" /></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-flat btn-outline-secondary" data-dismiss="modal">閉じる</button>
+        <button type="button" class="btn btn-sm btn-flat btn-outline-secondary" data-bs-dismiss="modal">閉じる</button>
       </div>
     </div>
   </div>
@@ -103,16 +99,14 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
       <div class="modal-content rounded-0">
         <div class="modal-header">
           <h5 class="modal-title">二段階認証用QRコード発行</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
         </div>
         <div class="modal-body">
           <p>二段階認証で使用するQRコードが発行されました。<br />モバイル端末のGoogle Authenticatorで読み込んでください。</p>
           <p class="text-center mt-2"><img class="p-2 border" src="<?= $qr_url; ?>" /></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-flat btn-outline-secondary" data-dismiss="modal">閉じる</button>
+          <button type="button" class="btn btn-sm btn-flat btn-outline-secondary" data-bs-dismiss="modal">閉じる</button>
         </div>
       </div>
     </div>
@@ -129,7 +123,7 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
         <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'accounts-search-form']) ?>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('id', [
                   'class' => $input_class,
                   'label' => 'ID',
@@ -139,7 +133,7 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('name', [
                   'class' => $input_class,
                   'label' => '名前',
@@ -149,7 +143,7 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('mail', [
                   'class' => $input_class,
                   'label' => 'メールアドレス',
@@ -159,8 +153,8 @@ $google_authenticator = new PHPGangsta_GoogleAuthenticator();
           </div>
           <div class="row">
             <div class="col-md-12">
-              <div class="form-group">
-                <?= $this->Form->button('検索', ['class' => "{$btn_class} btn-block"]) ?>
+              <div class="mb-3 d-grid">
+                <?= $this->Form->button('検索', ['class' => "{$btn_class}"]) ?>
               </div>
             </div>
           </div>

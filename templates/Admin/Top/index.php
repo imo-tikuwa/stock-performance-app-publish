@@ -9,7 +9,7 @@ $this->assign('title', '管理画面TOP');
 <?php if (!empty($functions) && count($functions) > 0) { ?>
   <?php foreach ($functions as $function) { ?>
     <?php if (AuthUtils::hasRole($this->getRequest(), ['controller' => $function['controller'], 'action' => ACTION_INDEX])) { ?>
-      <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
         <div class="card">
           <div class="card-header">
             <?= $function['label'] ?>

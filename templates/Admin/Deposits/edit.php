@@ -6,14 +6,14 @@
 $button_name = (!empty($deposit) && !$deposit->isNew()) ? "更新" : "登録";
 $this->assign('title', "入出金{$button_name}");
 ?>
-<div class="col-md-12 mb-12">
+<div class="col">
   <div class="card">
     <div class="card-body">
       <?= $this->Form->create($deposit) ?>
       <div class="row">
         <div class="col-lg-2 col-md-4 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'deposit-date-datepicker', 'label' => '入出金日', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'deposit-date-datepicker', 'label' => '入出金日', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <?= $this->Form->control('deposit_date', [
               'type' => 'text',
               'id' => 'deposit-date-datepicker',
@@ -28,8 +28,8 @@ $this->assign('title', "入出金{$button_name}");
           </div>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'deposit_amount', 'label' => '入出金額', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'deposit_amount', 'label' => '入出金額', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <div class="input number">
               <div class="input-group input-group-sm">
                 <?= $this->Form->text('deposit_amount', [
@@ -43,7 +43,7 @@ $this->assign('title', "入出金{$button_name}");
                   'required' => false,
                   'error' => false
                 ]); ?>
-                <div class="input-group-append"><span class="input-group-text rounded-0">円</span></div>
+                <div class="input-group-text">円</div>
               </div>
             </div>
           </div>

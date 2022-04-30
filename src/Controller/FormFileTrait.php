@@ -96,7 +96,7 @@ trait FormFileTrait
             if (!empty($prefix)) {
                 $delete_action .= '/' . Inflector::underscore($prefix);
             }
-            $delete_action .= '/' . Inflector::underscore($this->name) . '/file-delete/' . $input_name;
+            $delete_action .= '/' . Inflector::dasherize($this->name) . '/file-delete/' . $input_name;
 
             $url = $this->getRequest()->is('ssl') ? 'https://' : 'http://';
             $url .= is_null($this->getRequest()->host()) ? 'localhost' : $this->getRequest()->host();
