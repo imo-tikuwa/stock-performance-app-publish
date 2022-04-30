@@ -13,30 +13,32 @@ $this->Form->setTemplates([
 ?>
 <div class="col-md-12 mb-12">
   <div class="card rounded-0">
-    <div class="card-header">
-      <div class="form-inline">
-        <div class="btn-group mr-2" role="group">
-          <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
-            <a class="btn btn-sm btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
-          <?php } ?>
-          <a class="btn btn-sm btn-flat btn-outline-secondary d-none d-md-inline" href="javascript:void(0);" data-toggle="modal" data-target="#daily_records-search-form-modal">検索</a>
-          <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
-            <a class="btn btn-sm btn-flat btn-outline-secondary d-none d-md-inline" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
-          <?php } ?>
-          <a class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle d-md-none" href="#" role="button" id="sp-action-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">アクション</a>
-          <div class="dropdown-menu" aria-labelledby="sp-action-link">
+    <div class="card-header bg-body">
+      <div class="row">
+        <div class="col-auto">
+          <div class="btn-group" role="group">
             <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
-              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
+              <a class="btn btn-sm btn-flat btn-outline-secondary d-none d-lg-inline" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
             <?php } ?>
-            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#daily_records-search-form-modal">検索</a>
+            <a class="btn btn-sm btn-flat btn-outline-secondary d-none d-lg-inline" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#daily_records-search-form-modal">検索</a>
             <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
-              <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
+              <a class="btn btn-sm btn-flat btn-outline-secondary d-none d-lg-inline" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
             <?php } ?>
+            <a class="btn btn-sm btn-flat btn-outline-secondary dropdown-toggle d-lg-none" href="#" role="button" id="sp-action-link" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">アクション</a>
+            <div class="dropdown-menu" aria-labelledby="sp-action-link">
+              <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_ADD])) { ?>
+                <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_ADD]) ?>">新規登録</a>
+              <?php } ?>
+              <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#daily_records-search-form-modal">検索</a>
+              <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_CSV_EXPORT])) { ?>
+                <a class="dropdown-item" href="<?= $this->Url->build(['action' => ACTION_CSV_EXPORT, '?' => $this->getRequest()->getQueryParams()]) ?>">CSVエクスポート</a>
+              <?php } ?>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="card-body p-0">
+    <div class="card-body p-0 d-grid">
       <div class="table-responsive">
         <table class="table table-sm table-hover text-sm text-nowrap">
           <thead>
@@ -59,10 +61,10 @@ $this->Form->setTemplates([
                 <td><?= h($daily_record?->modified?->i18nFormat('yyyy/MM/dd HH:mm:ss')) ?></td>
                 <td class="actions">
                   <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_VIEW])) { ?>
-                    <?= $this->Html->link('<i title="詳細" class="far fa-list-alt mr-1"></i>', ['action' => ACTION_VIEW, $daily_record->id], ['escape' => false]) ?>
+                    <?= $this->Html->link('<i title="詳細" class="far fa-list-alt me-1"></i>', ['action' => ACTION_VIEW, $daily_record->id], ['escape' => false]) ?>
                   <?php } ?>
                   <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_EDIT])) { ?>
-                    <?= $this->Html->link('<i title="編集" class="fas fa-pen mr-1"></i>', ['action' => ACTION_EDIT, $daily_record->id], ['escape' => false]) ?>
+                    <?= $this->Html->link('<i title="編集" class="fas fa-pen me-1"></i>', ['action' => ACTION_EDIT, $daily_record->id], ['escape' => false]) ?>
                   <?php } ?>
                   <?php if (AuthUtils::hasRole($this->getRequest(), ['action' => ACTION_DELETE])) { ?>
                     <?= $this->Form->postLink('<i title="削除" class="fas fa-trash"></i>', ['action' => ACTION_DELETE, $daily_record->id], ['escape' => false, 'method' => 'delete', 'confirm' => __('ID {0} を削除します。よろしいですか？', $daily_record->id)]) ?>
@@ -88,7 +90,7 @@ $this->Form->setTemplates([
         <?= $this->Form->create($search_form, ['type' => 'get', 'id' => 'daily_records-search-form']) ?>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('id', [
                   'type' => 'text',
                   'class' => 'form-control form-control-sm rounded-0',
@@ -99,7 +101,7 @@ $this->Form->setTemplates([
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('account_id', [
                   'id' => 'account-id',
                   'type' => 'select',
@@ -113,7 +115,7 @@ $this->Form->setTemplates([
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('day_from', [
                   'id' => 'day-from-datepicker',
                   'type' => 'text',
@@ -127,7 +129,7 @@ $this->Form->setTemplates([
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <?= $this->Form->control('day_to', [
                   'id' => 'day-to-datepicker',
                   'type' => 'text',
@@ -141,7 +143,7 @@ $this->Form->setTemplates([
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input number">
                   <label for="record_from" class="col-form-label col-form-label-sm">資産額From</label>
                   <div class="input-group input-group-sm">
@@ -154,7 +156,7 @@ $this->Form->setTemplates([
                       'max' => '1000000000',
                       'step' => '1',
                     ]); ?>
-                    <div class="input-group-append"><span class="input-group-text rounded-0">円</span></div>
+                    <div class="input-group-text">円</div>
                   </div>
                 </div>
               </div>
@@ -162,7 +164,7 @@ $this->Form->setTemplates([
           </div>
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input number">
                   <label for="record_to" class="col-form-label col-form-label-sm">資産額To</label>
                   <div class="input-group input-group-sm">
@@ -175,7 +177,7 @@ $this->Form->setTemplates([
                       'max' => '1000000000',
                       'step' => '1',
                     ]); ?>
-                    <div class="input-group-append"><span class="input-group-text rounded-0">円</span></div>
+                    <div class="input-group-text">円</div>
                   </div>
                 </div>
               </div>
@@ -183,8 +185,8 @@ $this->Form->setTemplates([
           </div>
           <div class="row">
             <div class="col-md-12">
-              <div class="form-group">
-                <?= $this->Form->button('検索', ['class' => 'btn btn-sm btn-flat btn-outline-secondary btn-block']) ?>
+              <div class="mb-3 d-grid">
+                <?= $this->Form->button('検索', ['class' => 'btn btn-sm btn-flat btn-outline-secondary']) ?>
               </div>
             </div>
           </div>

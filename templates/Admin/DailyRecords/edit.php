@@ -6,14 +6,14 @@
 $button_name = (!empty($daily_record) && !$daily_record->isNew()) ? "更新" : "登録";
 $this->assign('title', "資産記録{$button_name}");
 ?>
-<div class="col-md-12 mb-12">
+<div class="col">
   <div class="card">
     <div class="card-body">
       <?= $this->Form->create($daily_record) ?>
       <div class="row">
         <div class="col-lg-2 col-md-4 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'account_id', 'label' => '口座名', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'account_id', 'label' => '口座名', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <?= $this->Form->control('account_id', [
               'id' => 'account-id',
               'type' => 'select',
@@ -27,8 +27,8 @@ $this->assign('title', "資産記録{$button_name}");
           </div>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'day-datepicker', 'label' => '日付', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'day-datepicker', 'label' => '日付', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <?= $this->Form->control('day', [
               'type' => 'text',
               'id' => 'day-datepicker',
@@ -43,8 +43,8 @@ $this->assign('title', "資産記録{$button_name}");
           </div>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-12">
-          <div class="form-group">
-            <?= $this->element('Parts/label', ['field' => 'record', 'label' => '資産額', 'require' => true, 'class' => 'item-label col-form-label col-form-label-sm']); ?>
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'record', 'label' => '資産額', 'require' => true, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <div class="input number">
               <div class="input-group input-group-sm">
                 <?= $this->Form->text('record', [
@@ -58,7 +58,7 @@ $this->assign('title', "資産記録{$button_name}");
                   'required' => false,
                   'error' => false
                 ]); ?>
-                <div class="input-group-append"><span class="input-group-text rounded-0">円</span></div>
+                <div class="input-group-text">円</div>
               </div>
             </div>
           </div>
