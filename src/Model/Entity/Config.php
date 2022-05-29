@@ -18,7 +18,6 @@ namespace App\Model\Entity;
  */
 class Config extends AppEntity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -37,6 +36,16 @@ class Config extends AppEntity
         'chromedriver_path' => true,
         'created' => true,
         'modified' => true,
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array<string>
+     */
+    protected $_hidden = [
+        'created',
+        'modified',
     ];
 
     /**

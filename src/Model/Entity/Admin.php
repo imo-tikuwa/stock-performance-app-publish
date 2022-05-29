@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model\Entity;
 
 use App\Utils\Encrypter;
@@ -13,6 +15,7 @@ use App\Utils\Encrypter;
  * @property bool $use_otp
  * @property string $otp_secret
  * @property array|null $privilege
+ * @property string|null $api_token
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property \Cake\I18n\FrozenTime|null $deleted
@@ -36,6 +39,7 @@ class Admin extends AppEntity
         'otp_secret' => true,
         'privilege' => true,
         'created' => true,
+        'api_token' => true,
         'modified' => true,
         'deleted' => true,
     ];
@@ -63,11 +67,13 @@ class Admin extends AppEntity
 
         $encrypted_password = Encrypter::encrypt($password);
         assert($encrypted_password !== false);
+
         return $encrypted_password;
     }
 
     /**
      * 復号化されたパスワードを返す
+     *
      * @return string|null 暗号化されていないパスワード文字列 or null
      */
     protected function _getRawPassword()
@@ -78,11 +84,13 @@ class Admin extends AppEntity
 
         $decrypted_password = Encrypter::decrypt($this->password);
         assert($decrypted_password !== false);
+
         return $decrypted_password;
     }
 
     /**
      * 二段階認証について有効/無効を返す
+     *
      * @return string 有効 or 無効
      */
     protected function _getOtpStatus()

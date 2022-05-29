@@ -22,26 +22,26 @@ $password_value = ($this->getRequest()->getParam('action') === 'edit' && $this->
       <!-- dummy input. -->
       <input type="password" class="d-none" />
       <div class="row">
-        <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="col-lg-2 col-md-6 col-sm-12">
           <div class="mb-3">
             <?= $this->element('Parts/label', ['field' => 'name', 'label' => '名前', 'require' => true, 'class' => $label_class]); ?>
             <?= $this->Form->control('name', ['class' => $input_class, 'label' => false, 'maxlength' => '255', 'required' => false, 'error' => false]); ?>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="col-lg-2 col-md-6 col-sm-12">
           <div class="mb-3">
             <?= $this->element('Parts/label', ['field' => 'mail', 'label' => 'メールアドレス', 'require' => true, 'class' => $label_class]); ?>
             <?= $this->Form->control('mail', ['class' => $input_class, 'label' => false, 'maxlength' => '255', 'required' => false, 'error' => false]); ?>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="col-lg-2 col-md-6 col-sm-12">
           <div class="mb-3">
             <?= $this->element('Parts/label', ['field' => 'password', 'label' => 'パスワード', 'require' => true, 'class' => $label_class]); ?>
             <?= $this->Form->control('password', ['class' => $input_class, 'label' => false, 'maxlength' => '20', 'value' => $password_value, 'required' => false, 'error' => false]); ?>
             <label class="text-info" id="password-toggle-label"><input type="checkbox" id="password-toggle"/> パスワードを表示</label>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="col-lg-2 col-md-6 col-sm-12">
           <div class="mb-3">
             <?= $this->element('Parts/label', ['field' => 'use_otp', 'label' => '二段階認証', 'require' => false, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
             <div class="form-check">
@@ -56,6 +56,20 @@ $password_value = ($this->getRequest()->getParam('action') === 'edit' && $this->
                 'error' => false
               ]); ?>
             </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6 col-sm-12">
+          <div class="mb-3">
+            <?= $this->element('Parts/label', ['field' => 'update-api-token', 'label' => 'OpenAPIトークン', 'require' => false, 'class' => 'form-label col-form-label col-form-label-sm']); ?>
+            <?= $this->Form->select('mode_api_token', $api_token_selections, [
+              'id' => 'update-api-token',
+              'value' => true,
+              'class' => $input_class,
+              'label' => false,
+              'empty' => '　',
+              'required' => false,
+              'error' => false
+            ]); ?>
           </div>
         </div>
         <?php if (SUPER_USER_ID != $admin->id) { ?>

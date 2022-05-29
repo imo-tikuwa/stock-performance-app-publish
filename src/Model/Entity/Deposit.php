@@ -15,7 +15,6 @@ namespace App\Model\Entity;
  */
 class Deposit extends AppEntity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -31,5 +30,16 @@ class Deposit extends AppEntity
         'created' => true,
         'modified' => true,
         'deleted' => true,
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array<string>
+     */
+    protected $_hidden = [
+        'created',
+        'modified',
+        'deleted',
     ];
 }

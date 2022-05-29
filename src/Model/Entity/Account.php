@@ -16,7 +16,6 @@ namespace App\Model\Entity;
  */
 class Account extends AppEntity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -32,5 +31,15 @@ class Account extends AppEntity
         'created' => true,
         'modified' => true,
         'daily_records' => true,
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array<string>
+     */
+    protected $_hidden = [
+        'created',
+        'modified',
     ];
 }

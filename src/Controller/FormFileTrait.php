@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Cake\Core\Exception\CakeException;
@@ -17,6 +19,7 @@ trait FormFileTrait
 {
     /**
      * Ajaxファイルアップロード処理
+     *
      * @param string $input_name input[type=file]の要素名
      * @return \Cake\Http\Response json response
      */
@@ -29,14 +32,14 @@ trait FormFileTrait
             $this->viewBuilder()->disableAutoLayout();
             $this->autoRender = false;
             if (!$this->getRequest()->is(['post'])) {
-                throw new CakeException("不正なリクエストです。Invalid Request.");
+                throw new CakeException('不正なリクエストです。Invalid Request.');
             } elseif (is_null($input_name)) {
-                throw new CakeException("プログラムエラーが発生しました。Invalid Request.");
+                throw new CakeException('プログラムエラーが発生しました。Invalid Request.');
             }
 
             // App.uploadedFilesAsObjectsの値によってオブジェクトと配列の条件分岐が必要
             $file = $this->getRequest()->getData($input_name);
-            if (null !== _code('App.uploadedFilesAsObjects') && _code('App.uploadedFilesAsObjects') === false) {
+            if (_code('App.uploadedFilesAsObjects') !== null && _code('App.uploadedFilesAsObjects') === false) {
                 $org_name = $file['name'];
                 $file_size = $file['size'];
                 $tmp_name = $file['tmp_name'];
@@ -48,38 +51,38 @@ trait FormFileTrait
             }
 
             if (empty($org_name) || empty($tmp_name)) {
-                throw new CakeException("プログラムエラーが発生しました。Empty File.");
+                throw new CakeException('プログラムエラーが発生しました。Empty File.');
             }
 
             $extension = pathinfo($org_name, PATHINFO_EXTENSION);
             if (empty($extension)) {
-                throw new CakeException("プログラムエラーが発生しました。Invalid Extension.");
+                throw new CakeException('プログラムエラーが発生しました。Invalid Extension.');
             }
             $extension = strtolower($extension);
 
             // 拡張子チェック
             $allow_file_extensions = _code("FileUploadOptions.{$this->name}.{$input_name}.allow_file_extensions", null);
             if (!is_null($allow_file_extensions) && !in_array($extension, $allow_file_extensions, true)) {
-                throw new CakeException("アップロードされたファイルの拡張子が許可されてません。Invalid Extension.");
+                throw new CakeException('アップロードされたファイルの拡張子が許可されてません。Invalid Extension.');
             }
 
             // ファイルアップロード
             $new_file_key = sha1(uniqid((string)rand()));
-            $cur_name = $new_file_key . "." . $extension;
+            $cur_name = $new_file_key . '.' . $extension;
             $upload_to = UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $cur_name;
             if (!copy($tmp_name, $upload_to)) {
-                throw new CakeException("ファイルのアップロードに失敗しました。Upload Failed.");
+                throw new CakeException('ファイルのアップロードに失敗しました。Upload Failed.');
             }
             unlink($tmp_name);
 
             // アップロードされたファイルが画像かつ、サムネイル生成のオプションが有効なときサムネ生成
             if (in_array($extension, ['png', 'jpg', 'jpeg', 'gif'], true) && _code("FileUploadOptions.{$this->name}.{$input_name}.create_thumbnail", false)) {
                 $file_upload_options = _code("FileUploadOptions.{$this->name}.{$input_name}");
-                $thumbnail_width = (isset($file_upload_options['thumbnail_width']) && is_numeric($file_upload_options['thumbnail_width'])) ? $file_upload_options['thumbnail_width'] : null;
-                $thumbnail_height = (isset($file_upload_options['thumbnail_height']) && is_numeric($file_upload_options['thumbnail_height'])) ? $file_upload_options['thumbnail_height'] : null;
-                $thumbnail_aspect_ratio_keep = (isset($file_upload_options['thumbnail_aspect_ratio_keep']) && $file_upload_options['thumbnail_aspect_ratio_keep'] === true) ? true : false;
-                $thumbnail_quality = (isset($file_upload_options['thumbnail_quality']) && is_numeric($file_upload_options['thumbnail_quality'])) ? (int)$file_upload_options['thumbnail_quality'] : 90;
-                $thumb_to = UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $new_file_key . "_thumb." . $extension;
+                $thumbnail_width = isset($file_upload_options['thumbnail_width']) && is_numeric($file_upload_options['thumbnail_width']) ? $file_upload_options['thumbnail_width'] : null;
+                $thumbnail_height = isset($file_upload_options['thumbnail_height']) && is_numeric($file_upload_options['thumbnail_height']) ? $file_upload_options['thumbnail_height'] : null;
+                $thumbnail_aspect_ratio_keep = isset($file_upload_options['thumbnail_aspect_ratio_keep']) && $file_upload_options['thumbnail_aspect_ratio_keep'] === true ? true : false;
+                $thumbnail_quality = isset($file_upload_options['thumbnail_quality']) && is_numeric($file_upload_options['thumbnail_quality']) ? (int)$file_upload_options['thumbnail_quality'] : 90;
+                $thumb_to = UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $new_file_key . '_thumb.' . $extension;
                 if ($thumbnail_aspect_ratio_keep) {
                     // @phpstan-ignore-next-line
                     ImageManagerStatic::make($upload_to)->resize($thumbnail_width, $thumbnail_height, function ($constraint) {
@@ -91,12 +94,12 @@ trait FormFileTrait
                 }
             }
 
-            $delete_action = "";
+            $delete_action = '';
             $prefix = $this->getRequest()->getParam('prefix');
             if (!empty($prefix)) {
                 $delete_action .= '/' . Inflector::underscore($prefix);
             }
-            $delete_action .= '/' . Inflector::dasherize($this->name) . '/file-delete/' . $input_name;
+            $delete_action .= '/' . Inflector::dasherize($this->name) . '/file-delete';
 
             $url = $this->getRequest()->is('ssl') ? 'https://' : 'http://';
             $url .= is_null($this->getRequest()->host()) ? 'localhost' : $this->getRequest()->host();
@@ -107,7 +110,7 @@ trait FormFileTrait
 
             $response_data += [
                 'initialPreview' => [
-                    $url . '/' . UPLOAD_FILE_BASE_DIR_NAME . '/' . Inflector::underscore($this->name) . '/' . $cur_name
+                    $url . '/' . UPLOAD_FILE_BASE_DIR_NAME . '/' . Inflector::underscore($this->name) . '/' . $cur_name,
                 ],
                 'initialPreviewConfig' => [
                     0 => [
@@ -124,7 +127,7 @@ trait FormFileTrait
                 'delete_url' => $delete_action,
                 'key' => $cur_name,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->log($e->getMessage());
             $response_data['error'] = $e->getMessage();
             $response = $response->withStatus(400);
@@ -143,11 +146,10 @@ trait FormFileTrait
      * ※実際には削除しないので注意
      * 今のところbootstrap-fileinputプラグイン用の削除完了ステータスを返すだけ
      *
-     * @param string $input_name input[type=file]の要素名
-     * @throws Exception
+     * @throws \Exception
      * @return \Cake\Http\Response json response
      */
-    public function fileDelete($input_name = null)
+    public function fileDelete()
     {
         /** @var \Cake\Http\Response $response */
         $response = $this->getResponse();
@@ -157,18 +159,18 @@ trait FormFileTrait
             $this->autoRender = false;
 
             if (!$this->getRequest()->is(['post', 'delete'])) {
-                throw new CakeException("不正なリクエストです。Invalid Request.");
+                throw new CakeException('不正なリクエストです。Invalid Request.');
             }
 
             $key = $this->getRequest()->getData('key');
             if (is_null($key)) {
                 $this->log('削除対象のファイルキーが存在しません');
-                throw new CakeException("プログラムエラーが発生しました。");
+                throw new CakeException('プログラムエラーが発生しました。');
             }
 
             if (!file_exists(UPLOAD_FILE_BASE_DIR . DS . Inflector::underscore($this->name) . DS . $key)) {
                 $this->log('削除対象の実ファイルが存在しません');
-                throw new CakeException("プログラムエラーが発生しました。");
+                throw new CakeException('プログラムエラーが発生しました。');
             }
 
             $response_data['status'] = true;

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Utils;
 
@@ -6,8 +7,8 @@ use Cake\Utility\Security;
 
 /**
  * 暗号化/復号化を行うクラス
- * @author tikuwa
  *
+ * @author tikuwa
  */
 class Encrypter
 {

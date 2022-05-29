@@ -13,9 +13,7 @@ use Cake\Event\EventInterface;
 class AuthController extends AppController
 {
     /**
-     *
-     * {@inheritDoc}
-     * @see \Cake\Controller\Controller::beforeFilter()
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {
@@ -28,7 +26,8 @@ class AuthController extends AppController
 
     /**
      * ログイン
-     * @return \Cake\Http\Response|void
+     *
+     * @return \Cake\Http\Response|null
      */
     public function login()
     {
@@ -37,7 +36,8 @@ class AuthController extends AppController
 
     /**
      * 二段階認証付きログイン
-     * @return \Cake\Http\Response|void
+     *
+     * @return \Cake\Http\Response|null
      */
     public function secureLogin()
     {
@@ -46,33 +46,37 @@ class AuthController extends AppController
 
     /**
      * 共通ログイン処理
+     *
      * @return \Cake\Http\Response|null
      */
     private function _login()
     {
         $this->getRequest()->allowMethod(['get', 'post']);
         $result = $this->Authentication->getResult();
-        if ($result->isValid()) {
+        if ($result?->isValid()) {
             $target = $this->Authentication->getLoginRedirect() ?? '/admin/top';
 
             return $this->redirect($target);
         } elseif ($this->getRequest()->is('post')) {
-            $error_message = ($this->getRequest()->getParam('action') === 'secureLogin') ? 'ログインID/パスワード/認証コードのいずれかが正しくありません。' : 'ログインID/パスワードのいずれかが正しくありません。';
+            $error_message = $this->getRequest()->getParam('action') === 'secureLogin' ? 'ログインID/パスワード/認証コードのいずれかが正しくありません。' : 'ログインID/パスワードのいずれかが正しくありません。';
             $this->Flash->error($error_message);
         }
+
         return $this->render('login');
     }
 
     /**
      * ログアウト
-     * @return \Cake\Http\Response|void
+     *
+     * @return \Cake\Http\Response|null|void
      */
     public function logout()
     {
         $result = $this->Authentication->getResult();
-        if ($result->isValid()) {
+        if ($result?->isValid()) {
             $redirect_login_action = $this->getRequest()->getSession()->read('Auth.Admin.use_otp') ? 'secureLogin' : 'login';
             $this->Authentication->logout();
+
             return $this->redirect(['action' => $redirect_login_action]);
         }
     }

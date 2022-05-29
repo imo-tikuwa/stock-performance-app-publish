@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Utils;
 
 use Cake\ORM\TableRegistry;
@@ -11,6 +13,7 @@ class RecordUtils
 {
     /**
      * 前営業日の実質資産額を取得する
+     *
      * @param string $date_str 日付文字列
      * @return int|null 前営業日の実質資産額
      */
@@ -36,6 +39,7 @@ class RecordUtils
 
     /**
      * 前月最終営業日の実質資産額を取得する
+     *
      * @param string $date_str 日付文字列
      * @return int|null 前営業日の実質資産額
      */
@@ -77,6 +81,7 @@ class RecordUtils
 
     /**
      * 前年最終営業日の実質資産額を取得する
+     *
      * @param string $date_str 日付文字列
      * @return int|null 前営業日の実質資産額
      */
@@ -105,14 +110,15 @@ class RecordUtils
 
     /**
      * 引数の営業日時点の資産総額と入金総額取得し実質資産を返す
-     * @param string $business_day 営業日付
+     *
+     * @param string $deposit_date 営業日付
      * @return int|null 実質資産
      */
-    private static function calcRecordTotalReal($business_day)
+    private static function calcRecordTotalReal($deposit_date)
     {
         /** @var \App\Model\Table\DailyRecordsTable $daily_records_table */
         $daily_records_table = TableRegistry::getTableLocator()->get('DailyRecords');
-        $query = $daily_records_table->find()->where(['day' => $business_day]);
+        $query = $daily_records_table->find()->where(['day' => $deposit_date]);
         if ($query->count() <= 0) {
             return null;
         }
@@ -121,7 +127,7 @@ class RecordUtils
         /** @var \App\Model\Table\DepositsTable $deposits_table */
         $deposits_table = TableRegistry::getTableLocator()->get('Deposits');
         $target_date_deposit_sum = $deposits_table->find()
-        ->where(['deposit_date <=' => $business_day])
+        ->where(['deposit_date <=' => $deposit_date])
         ->sumOf('deposit_amount');
         $daily_record_sum -= $target_date_deposit_sum;
 

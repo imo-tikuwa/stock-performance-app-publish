@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -14,7 +13,6 @@ use Cake\Validation\Validator;
  * DailyRecords Model
  *
  * @property \App\Model\Table\AccountsTable&\Cake\ORM\Association\BelongsTo $Accounts
- *
  * @method \App\Model\Entity\DailyRecord newEmptyEntity()
  * @method \App\Model\Entity\DailyRecord newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\DailyRecord[] newEntities(array $data, array $options = [])
@@ -28,12 +26,10 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\DailyRecord[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\DailyRecord[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\DailyRecord[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class DailyRecordsTable extends AppTable
 {
-
     /**
      * Initialize method
      *
@@ -71,16 +67,17 @@ class DailyRecordsTable extends AppTable
             ->add('account_id', 'integer', [
                 'rule' => 'isInteger',
                 'message' => '口座名を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('account_id', 'existForeignEntity', [
                 'rule' => function ($account_id) {
                     $table = TableRegistry::getTableLocator()->get('Accounts');
                     $entity = $table->find()->select(['id'])->where(['id' => $account_id])->first();
+
                     return !empty($entity);
                 },
                 'message' => '口座名に不正な値が入力されています。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('account_id', '口座名を選択してください。');
 
@@ -90,16 +87,17 @@ class DailyRecordsTable extends AppTable
             ->add('day', 'date', [
                 'rule' => ['date', ['ymd']],
                 'message' => '日付を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('day', 'validDate', [
                 'rule' => function ($value) {
                     /** @var \App\Model\Table\CalendarsTable $table */
                     $table = TableRegistry::getTableLocator()->get('Calendars');
+
                     return $table->checkBusinessDay($value);
                 },
                 'message' => '日付に不正な値が入力されています。',
-                'last' => true
+                'last' => true,
             ])
             ->add('day', [
                 'unique' => [
@@ -110,7 +108,7 @@ class DailyRecordsTable extends AppTable
                     ],
                     'provider' => Table::VALIDATOR_PROVIDER_NAME,
                     'message' => '入力した日付のデータは既に登録されています',
-                    'last' => true
+                    'last' => true,
                 ],
             ])
             ->notEmptyDate('day', '日付を入力してください。');
@@ -121,17 +119,17 @@ class DailyRecordsTable extends AppTable
             ->add('record', 'integer', [
                 'rule' => 'isInteger',
                 'message' => '資産額を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('record', 'greaterThanOrEqual', [
                 'rule' => ['comparison', '>=', 0],
                 'message' => '資産額は0以上の値で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('record', 'lessThanOrEqual', [
                 'rule' => ['comparison', '<=', 1000000000],
                 'message' => '資産額は1000000000以下の値で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('record', '資産額を入力してください。');
 
@@ -157,7 +155,7 @@ class DailyRecordsTable extends AppTable
      * ファイル項目、GoogleMap項目のJSON文字列を配列に変換する
      *
      * @see \Cake\ORM\Table::patchEntity()
-     * @param EntityInterface $entity エンティティ
+     * @param \Cake\Datasource\EntityInterface $entity エンティティ
      * @param array $data エンティティに上書きするデータ
      * @param array $options オプション配列
      * @return \App\Model\Entity\DailyRecord
@@ -166,11 +164,13 @@ class DailyRecordsTable extends AppTable
     {
         $entity = parent::patchEntity($entity, $data, $options);
         assert($entity instanceof \App\Model\Entity\DailyRecord);
+
         return $entity;
     }
 
     /**
      * ページネートに渡すクエリオブジェクトを生成する
+     *
      * @param array $request リクエスト情報
      * @return \Cake\ORM\Query $query
      */
@@ -208,6 +208,7 @@ class DailyRecordsTable extends AppTable
 
     /**
      * CSVヘッダー情報を取得する
+     *
      * @return array
      */
     public function getCsvHeaders()
@@ -224,6 +225,7 @@ class DailyRecordsTable extends AppTable
 
     /**
      * CSVカラム情報を取得する
+     *
      * @return array
      */
     public function getCsvColumns()

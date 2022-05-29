@@ -34,7 +34,7 @@ class CreateCalendarsCommand extends Command
             'required' => true,
             'choices' => [
                 $datetime->format('Y'),
-                $datetime->add(new DateInterval('P1Y'))->format('Y')
+                $datetime->add(new DateInterval('P1Y'))->format('Y'),
             ],
         ]);
 
@@ -54,6 +54,7 @@ class CreateCalendarsCommand extends Command
 
         // 対象年
         $year = $args->getArgument('year');
+        assert(is_string($year));
 
         // 対象年のデータがある場合は終了
         $result = $this->Calendars->findByYear($year);

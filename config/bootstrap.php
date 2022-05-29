@@ -34,6 +34,8 @@ require CORE_PATH . 'config' . DS . 'bootstrap.php';
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Database\Type\StringType;
+use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ConsoleErrorHandler;
 use Cake\Error\ErrorHandler;
@@ -185,31 +187,30 @@ ServerRequest::addDetector('tablet', function ($request) {
 });
 
 /*
- * You can set whether the ORM uses immutable or mutable Time types.
- * The default changed in 4.0 to immutable types. You can uncomment
- * below to switch back to mutable types.
- *
  * You can enable default locale format parsing by adding calls
  * to `useLocaleParser()`. This enables the automatic conversion of
  * locale specific date formats. For details see
  * @link https://book.cakephp.org/4/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
  */
-// TypeFactory::build('time')
-//    ->useMutable();
-// TypeFactory::build('date')
-//    ->useMutable();
-// TypeFactory::build('datetime')
-//    ->useMutable();
-// TypeFactory::build('timestamp')
-//    ->useMutable();
-// TypeFactory::build('datetimefractional')
-//    ->useMutable();
-// TypeFactory::build('timestampfractional')
-//    ->useMutable();
-// TypeFactory::build('datetimetimezone')
-//    ->useMutable();
-// TypeFactory::build('timestamptimezone')
-//    ->useMutable();
+// \Cake\Database\TypeFactory::build('time')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('date')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('datetime')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('timestamp')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('datetimefractional')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('timestampfractional')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('datetimetimezone')
+//    ->useLocaleParser();
+// \Cake\Database\TypeFactory::build('timestamptimezone')
+//    ->useLocaleParser();
+
+// There is no time-specific type in Cake
+// TypeFactory::map('time', StringType::class);
 
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize

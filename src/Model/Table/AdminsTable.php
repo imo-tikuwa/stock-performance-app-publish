@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model\Table;
 
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use SoftDelete\Model\Table\SoftDeleteTrait;
 
@@ -19,7 +18,6 @@ use SoftDelete\Model\Table\SoftDeleteTrait;
  * @method \App\Model\Entity\Admin patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\Admin[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\Admin findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class AdminsTable extends AppTable
@@ -51,7 +49,7 @@ class AdminsTable extends AppTable
      */
     public function findAuth(Query $query, array $options): Query
     {
-        $query->select(['id', 'name', 'mail', 'password', 'use_otp', 'otp_secret', 'privilege']);
+        $query->select(['id', 'name', 'mail', 'password', 'use_otp', 'otp_secret', 'privilege', 'api_token']);
 
         return $query;
     }
@@ -75,12 +73,12 @@ class AdminsTable extends AppTable
             ->add('name', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => '名前を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('name', 'maxLength', [
                 'rule' => ['maxLength', 255],
                 'message' => '名前は255文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('name', '名前を入力してください。');
 
@@ -90,12 +88,12 @@ class AdminsTable extends AppTable
             ->add('mail', 'email', [
                 'rule' => 'email',
                 'message' => 'メールアドレスを正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('mail', 'maxLength', [
                 'rule' => ['maxLength', 255],
                 'message' => 'メールアドレスは255文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('mail', 'checkUnique', [
                 'rule' => function ($value, $context) {
@@ -107,7 +105,7 @@ class AdminsTable extends AppTable
                     return !$this->exists($conditions);
                 },
                 'message' => '入力されたメールアドレスのアカウントは既に存在します。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('mail', 'メールアドレスを入力してください。');
 
@@ -117,19 +115,19 @@ class AdminsTable extends AppTable
             ->add('password', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'パスワードを正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('password', 'custom', [
                 'rule' => function ($value) {
                     return (bool)preg_match('/^[a-zA-Z0-9!-\/:-@\[-~]+$/u', $value);
                 },
                 'message' => 'パスワードは半角英字、半角数字、半角記号で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('password', 'lengthBetween', [
                 'rule' => ['lengthBetween', 8, 20],
                 'message' => 'パスワードは8文字以上20文字以下で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('password', 'パスワードを入力してください。');
 
@@ -141,7 +139,7 @@ class AdminsTable extends AppTable
                     return in_array($value, ['0', '1'], true);
                 },
                 'message' => '二段階認証が不正です。',
-                'last' => true
+                'last' => true,
             ])
             ->allowEmptyString('use_otp');
 
@@ -152,6 +150,10 @@ class AdminsTable extends AppTable
         // 権限
         $validator
             ->allowEmptyString('privilege');
+
+        // OpenAPIトークン
+        $validator
+            ->allowEmptyString('api_token');
 
         return $validator;
     }

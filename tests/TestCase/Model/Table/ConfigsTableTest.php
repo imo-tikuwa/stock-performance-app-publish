@@ -55,7 +55,7 @@ class ConfigsTableTest extends TestCase
             // 表示項目設定
             'display_setting' => [
                 'date',
-                'record_total_real'
+                'record_total_real',
             ],
             // ChromeDriverのパス
             'chromedriver_path' => 'valid data.',

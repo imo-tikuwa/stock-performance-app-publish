@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -37,6 +39,7 @@ class AppEntity extends Entity
 
     /**
      * 関連テーブルのエラーメッセージを返す
+     *
      * @param array $related_errors 関連テーブルのエラー情報
      * @param string $entity_name 関連テーブルのエンティティオブジェクト
      * @return array 関連テーブルのエラーメッセージの配列
@@ -57,6 +60,7 @@ class AppEntity extends Entity
 
     /**
      * 1個辺りの項目のエラーメッセージを返す
+     *
      * @param array $each_error 1項目辺りのエラー情報
      * @return string|array
      */

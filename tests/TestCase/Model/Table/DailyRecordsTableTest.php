@@ -109,7 +109,7 @@ class DailyRecordsTableTest extends TestCase
 
         $expected = [
             'account_id' => [
-                '_existsIn' => 'This value does not exist'
+                '_existsIn' => 'This value does not exist',
             ],
         ];
         $this->assertEquals($daily_record->getErrors(), $expected);

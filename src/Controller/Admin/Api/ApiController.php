@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Admin\Api;
 
 use App\Controller\Admin\AppController;
@@ -10,9 +12,7 @@ use Cake\Event\EventInterface;
 class ApiController extends AppController
 {
     /**
-     *
-     * {@inheritDoc}
-     * @see \Cake\Controller\Controller::beforeFilter()
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {

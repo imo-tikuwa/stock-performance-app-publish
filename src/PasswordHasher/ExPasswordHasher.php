@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\PasswordHasher;
 
 use App\Utils\Encrypter;
@@ -7,8 +9,8 @@ use Cake\Auth\AbstractPasswordHasher;
 
 /**
  * 暗号化/復号化を行えるようにするために独自定義したクラス
- * @author tikuwa
  *
+ * @author tikuwa
  */
 class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherInterface
 {
@@ -30,7 +32,6 @@ class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherI
      * パスワードの暗号化
      *
      * @see \Authentication\PasswordHasher\PasswordHasherInterface::hash()
-     *
      * @param string $password Plain text password to hash.
      * @return string Either the password hash string or false
      */
@@ -38,6 +39,7 @@ class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherI
     {
         $encrypted_password = Encrypter::encrypt($password);
         assert($encrypted_password !== false);
+
         return $encrypted_password;
     }
 
@@ -45,7 +47,6 @@ class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherI
      * パスワードの一致チェック
      *
      * @see \Authentication\PasswordHasher\PasswordHasherInterface::check()
-     *
      * @param string $password フォームで入力したパスワード
      * @param string $hashed_password DBに登録してあるpassword
      * @return bool True if hashes match else false.
@@ -55,6 +56,7 @@ class ExPasswordHasher extends AbstractPasswordHasher implements PasswordHasherI
         if (is_null($hashed_password) || $hashed_password === '') {
             return false;
         }
+
         return $password === Encrypter::decrypt($hashed_password);
     }
 }
