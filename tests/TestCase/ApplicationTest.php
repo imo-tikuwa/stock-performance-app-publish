@@ -50,7 +50,7 @@ class ApplicationTest extends TestCase
             'SoftDelete',
             'Authentication',
             'Utilities',
-            'CsvView'
+            'CsvView',
         ];
         if (Configure::read('debug')) {
             $testPlugins[] = 'DebugKit';

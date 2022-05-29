@@ -15,7 +15,6 @@ namespace App\Model\Entity;
  */
 class Calendar extends AppEntity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -31,5 +30,15 @@ class Calendar extends AppEntity
         'holiday_name' => true,
         'created' => true,
         'modified' => true,
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array<string>
+     */
+    protected $_hidden = [
+        'created',
+        'modified',
     ];
 }

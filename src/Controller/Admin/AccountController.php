@@ -1,25 +1,22 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use App\Utils\AuthUtils;
 use Cake\Event\EventInterface;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
-use Cake\Utility\Hash;
+use Cake\Utility\Text;
 use PHPGangsta_GoogleAuthenticator;
 
 /**
  * Account Controller
  *
  * @property \App\Model\Table\AdminsTable $Admins
- *
  * @method \App\Model\Entity\Admin[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class AccountController extends AppController
 {
-
     /**
      * Paging setting.
      */
@@ -28,9 +25,31 @@ class AccountController extends AppController
     ];
 
     /**
-     *
-     * {@inheritDoc}
-     * @see \App\Controller\Admin\AppController::beforeFilter()
+     * @var string OpenAPIトークンを生成する
+     */
+    private const CREATE_OPENAPI_TOKEN = 'create';
+
+    /**
+     * @var string OpenAPIトークンを更新する
+     */
+    private const MODIFY_OPENAPI_TOKEN = 'modify';
+
+    /**
+     * @var string OpenAPIトークンを削除する
+     */
+    private const DELETE_OPENAPI_TOKEN = 'delete';
+
+    /**
+     * @var array OpenAPI token choices.
+     */
+    private const OPENAPI_CHECKBOX_SELECTIONS = [
+        self::CREATE_OPENAPI_TOKEN => '生成する',
+        self::MODIFY_OPENAPI_TOKEN => '更新する',
+        self::DELETE_OPENAPI_TOKEN => '削除する',
+    ];
+
+    /**
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {
@@ -70,6 +89,7 @@ class AccountController extends AppController
 
     /**
      * ページネートに渡すクエリオブジェクトを生成する
+     *
      * @param array $request リクエスト情報
      * @return \Cake\ORM\Query $query
      */
@@ -126,6 +146,7 @@ class AccountController extends AppController
             $admin = $this->Admins->get($id);
             $this->Admins->touch($admin);
         } else {
+            /** @var \App\Model\Entity\Admin $admin */
             $admin = $this->Admins->newEmptyEntity();
         }
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
@@ -134,7 +155,7 @@ class AccountController extends AppController
                 $this->Flash->set(implode('<br />', $admin->getErrorMessages()), [
                     'escape' => false,
                     'element' => 'validation_error',
-                    'params' => ['alert-class' => 'text-sm']
+                    'params' => ['alert-class' => 'text-sm'],
                 ]);
             } else {
                 $conn = $this->Admins->getConnection();
@@ -147,11 +168,28 @@ class AccountController extends AppController
                     if ($admin->use_otp === true) {
                         $google_authenticator = new PHPGangsta_GoogleAuthenticator();
                         $otp_secret = $google_authenticator->createSecret(GOOGLE_AUTHENTICATOR_SECRET_KEY_LEN);
-                        $admin = $this->Admins->patchEntity($admin, ['otp_secret'=> $otp_secret], ['validate' => false]);
+                        $admin = $this->Admins->patchEntity($admin, ['otp_secret' => $otp_secret], ['validate' => false]);
                     } else {
-                        $admin = $this->Admins->patchEntity($admin, ['otp_secret'=> null], ['validate' => false]);
+                        $admin = $this->Admins->patchEntity($admin, ['otp_secret' => null], ['validate' => false]);
                     }
                 }
+
+                // OpenAPIトークンの生成/更新/削除
+                $mode_api_token = $this->getRequest()->getData('mode_api_token');
+                if (is_string($mode_api_token) && array_key_exists($mode_api_token, self::OPENAPI_CHECKBOX_SELECTIONS)) {
+                    switch ($mode_api_token) {
+                        case self::CREATE_OPENAPI_TOKEN:
+                        case self::MODIFY_OPENAPI_TOKEN:
+                            $admin = $this->Admins->patchEntity($admin, ['api_token' => Text::uuid()], ['validate' => false]);
+                            break;
+                        case self::DELETE_OPENAPI_TOKEN:
+                            $admin = $this->Admins->patchEntity($admin, ['api_token' => null], ['validate' => false]);
+                            break;
+                    }
+                }
+
+                $api_token_touched = $admin->isDirty('api_token');
+                $entity_status = !$admin->isNew() ? '更新' : '登録';
 
                 if ($this->Admins->save($admin, ['atomic' => false])) {
                     // 二段階認証 無効→有効 と切り替えたとき二段階認証用のQRコードを生成
@@ -162,14 +200,34 @@ class AccountController extends AppController
                     }
 
                     $conn->commit();
-                    $this->Flash->success('アカウントの登録が完了しました。');
+                    $message = "アカウントの{$entity_status}が完了しました。";
+                    if ($api_token_touched) {
+                        if (is_null($admin->api_token)) {
+                            $message .= '<br />OpenAPIトークンを削除しました。';
+                        } else {
+                            $api_token_status = $mode_api_token === self::MODIFY_OPENAPI_TOKEN ? '更新' : '登録';
+                            $message .= "<br />OpenAPIトークンを以下の値で{$api_token_status}しました。<br />{$admin->api_token}";
+                        }
+                    }
+                    $this->Flash->success($message, ['escape' => false]);
 
                     return $this->redirect(['action' => 'index']);
                 }
                 $conn->rollback();
             }
         }
-        $this->set(compact('admin'));
+
+        // 画面に渡すOpenAPIトークンの選択肢を作成
+        $api_token_selections = self::OPENAPI_CHECKBOX_SELECTIONS;
+        if (is_null($admin->api_token)) {
+            unset($api_token_selections[self::MODIFY_OPENAPI_TOKEN]);
+            unset($api_token_selections[self::DELETE_OPENAPI_TOKEN]);
+        } else {
+            unset($api_token_selections[self::CREATE_OPENAPI_TOKEN]);
+        }
+
+        $this->set(compact('admin', 'api_token_selections'));
+
         return $this->render('edit');
     }
 
@@ -182,7 +240,7 @@ class AccountController extends AppController
      */
     public function delete($id = null)
     {
-        if (SUPER_USER_ID == $id) {
+        if ($id === strval(SUPER_USER_ID)) {
             $this->Flash->error('エラーが発生しました。');
 
             return $this->redirect(['action' => 'index']);

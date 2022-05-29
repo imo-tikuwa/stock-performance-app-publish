@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use App\Utils\RecordUtils;
 use App\View\Helper\DisplayHelper;
@@ -24,14 +23,11 @@ use DateTime;
  * @property \App\Model\Table\ConfigsTable $Configs
  * @property \App\Model\Table\DailyRecordsTable $DailyRecords
  * @property \App\Model\Entity\Config $config
- *
  */
 class DisplayController extends AppController
 {
     /**
-     *
-     * {@inheritDoc}
-     * @see \App\Controller\Admin\AppController::beforeFilter()
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {
@@ -98,6 +94,7 @@ class DisplayController extends AppController
 
     /**
      * 画面表示で使用するデータを作成する
+     *
      * @param array $request リクエスト情報
      * @return array|\Cake\Http\Response|null
      */
@@ -122,6 +119,7 @@ class DisplayController extends AppController
         // 口座情報が存在しないときエラー
         if (empty($accounts)) {
             $this->Flash->error('口座が登録されていません。');
+
             return $this->redirect(['controller' => 'Top', 'action' => 'index']);
         }
 
@@ -143,11 +141,11 @@ class DisplayController extends AppController
 
             while ((int)($start_datetime->diff($end_datetime)->format('%R%a')) >= 0) {
                 $current_ymd = $start_datetime->format('Y-m-d');
-                if (in_array($current_ymd, $business_days)) {
+                if (in_array($current_ymd, $business_days, true)) {
                     $daily_record_id = null;
                     $day_record = null;
                     foreach ($account_daily_records as $daily_record) {
-                        if ($daily_record->day->i18nFormat('yyyy-MM-dd') === $current_ymd) {
+                        if ($daily_record->day?->i18nFormat('yyyy-MM-dd') === $current_ymd) {
                             $day_record = $daily_record->record;
                             $daily_record_id = $daily_record->id;
                             break;
@@ -173,6 +171,7 @@ class DisplayController extends AppController
         // レコード情報が存在しないときエラー
         if (empty($display_data['records'])) {
             $this->Flash->error('分析画面で資産情報が取得できませんでした。');
+
             return $this->redirect(['controller' => 'Top', 'action' => 'index']);
         }
 
@@ -356,7 +355,7 @@ EOS;
                 'plugins' => [
                     'legend' => [
                         'position' => 'bottom',
-                        'align' => 'end'
+                        'align' => 'end',
                     ],
                     'title' => [
                         'display' => true,
@@ -370,8 +369,8 @@ EOS;
                             'lineHeight' => 1,
                             'style' => 'italic',
                         ],
-                        'color' => '#999999'
-                    ]
+                        'color' => '#999999',
+                    ],
                 ],
                 'elements' => [
                     'point' => [
@@ -380,9 +379,9 @@ EOS;
                         'hoverRadius' => 7,
                     ],
                     'line' => [
-                        'borderWidth' => 4
+                        'borderWidth' => 4,
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -391,7 +390,7 @@ EOS;
             $display_data['chart_data']['options']['scales']['y'] = array_merge($display_data['chart_data']['options']['scales']['y'], [
                 'ticks' => [
                     'display' => false,
-                ]
+                ],
             ]);
         }
 
@@ -415,6 +414,7 @@ EOS;
         $display_helper = new DisplayHelper($tmp_view);
         $col_headers = [];
         $columns_formats = [];
+        assert(is_array($this->config->display_setting));
         foreach (_code('Codes.Configs.display_setting_for_handsontable') as $key => $data) {
             if (in_array($key, $this->config->display_setting, true)) {
                 if ($key === 'account_records') {
@@ -507,7 +507,7 @@ EOS;
                 if (!is_null($record['deposit_day_ammount'])) {
                     $html .= $display_helper->span($number_helper->format($record['deposit_day_ammount']) . '円', $record['deposit_day_ammount']);
                 }
-                if (is_null($record["deposit_id"])) {
+                if (is_null($record['deposit_id'])) {
                     $html .= $html_helper->link(
                         "<i class='fas fa-edit fa-fw'></i>",
                         ['controller' => 'Deposits', 'action' => ACTION_ADD, '?' => ['deposit_date' => $date]],
@@ -516,7 +516,7 @@ EOS;
                 } else {
                     $html .= $html_helper->link(
                         "<i class='fas fa-edit fa-fw'></i>",
-                        ['controller' => 'Deposits', 'action' => ACTION_EDIT, $record["deposit_id"]],
+                        ['controller' => 'Deposits', 'action' => ACTION_EDIT, $record['deposit_id']],
                         ['escapeTitle' => false, 'class' => 'ml-1']
                     );
                 }

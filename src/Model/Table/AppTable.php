@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model\Table;
 
 use Cake\ORM\Table;
@@ -6,12 +8,7 @@ use Cake\ORM\Table;
 class AppTable extends Table
 {
     /**
-     * 初期化処理
-     * {@inheritDoc}
-     * @see \Cake\ORM\Table::initialize()
-     *
-     * @param array $config Configuration options passed to the constructor
-     * @return void
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -22,9 +19,9 @@ class AppTable extends Table
             'events' => [
                 'Model.beforeSave' => [
                     'created' => 'new',
-                    'modified' => 'always'
-                ]
-            ]
+                    'modified' => 'always',
+                ],
+            ],
         ]);
     }
 }

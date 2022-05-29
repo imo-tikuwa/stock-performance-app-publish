@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use Cake\I18n\FrozenDate;
 use DateTime;
@@ -13,7 +12,6 @@ use DateTimeZone;
  * Deposits Controller
  *
  * @property \App\Model\Table\DepositsTable $Deposits
- *
  * @method \App\Model\Entity\Deposit[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class DepositsController extends AppController
@@ -106,7 +104,7 @@ class DepositsController extends AppController
                 $this->Flash->set(implode('<br />', $deposit->getErrorMessages()), [
                     'escape' => false,
                     'element' => 'validation_error',
-                    'params' => ['alert-class' => 'text-sm']
+                    'params' => ['alert-class' => 'text-sm'],
                 ]);
             } else {
                 $conn = $this->Deposits->getConnection();
@@ -121,6 +119,7 @@ class DepositsController extends AppController
             }
         }
         $this->set(compact('deposit'));
+
         return $this->render('edit');
     }
 
@@ -147,12 +146,14 @@ class DepositsController extends AppController
 
     /**
      * csv export method
+     *
      * @return void
      */
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
         $deposits = $this->Deposits->getSearchQuery($request)->toArray();
+        array_walk($deposits, fn(\App\Model\Entity\Deposit $deposit) => $deposit->setHidden([]));
         $extract = [
             // ID
             'id',
@@ -181,7 +182,7 @@ class DepositsController extends AppController
             'serialize' => 'deposits',
             'header' => $this->Deposits->getCsvHeaders(),
             'extract' => $extract,
-            'csvEncoding' => 'UTF-8'
+            'csvEncoding' => 'UTF-8',
         ]);
         $this->set(compact('deposits'));
     }

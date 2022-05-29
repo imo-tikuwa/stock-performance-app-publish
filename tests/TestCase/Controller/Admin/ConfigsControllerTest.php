@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Admin;
 
-use App\Controller\Admin\ConfigsController;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -28,12 +27,14 @@ class ConfigsControllerTest extends TestCase
 
     /**
      * configs table.
+     *
      * @var \App\Model\Table\ConfigsTable $Configs
      */
     protected $Configs;
 
     /**
      * admins table.
+     *
      * @var \App\Model\Table\AdminsTable $Admins
      */
     protected $Admins;
@@ -86,7 +87,7 @@ class ConfigsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'Configs' => [ROLE_READ],
-            ]
+            ],
         ]);
         $this->Admins->save($read_admin);
         /** @var \App\Model\Entity\Admin $read_admin */
@@ -101,7 +102,7 @@ class ConfigsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'Configs' => [ROLE_WRITE],
-            ]
+            ],
         ]);
         $this->Admins->save($write_admin);
         /** @var \App\Model\Entity\Admin $write_admin */
@@ -116,7 +117,7 @@ class ConfigsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'Configs' => [],
-            ]
+            ],
         ]);
         $this->Admins->save($no_authority_admin);
         /** @var \App\Model\Entity\Admin $no_authority_admin */
@@ -137,7 +138,7 @@ class ConfigsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/configs/edit');
         $this->assertResponseCode(200);
@@ -145,14 +146,14 @@ class ConfigsControllerTest extends TestCase
         $this->assertTextContains('<title>設定更新</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->get('/admin/configs/edit');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->get('/admin/configs/edit');
         $this->assertResponseCode(200);
@@ -160,7 +161,7 @@ class ConfigsControllerTest extends TestCase
         $this->assertTextContains('<title>設定更新</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/configs/edit');
         $this->assertResponseCode(302);

@@ -28,14 +28,14 @@ class ExcelImportForm extends Form
      * アップロードされたExcelファイルから読み取ったSpreadsheetオブジェクト
      * バージョンチェックでエラーなしのとき、セットされる
      *
-     * @var Spreadsheet
+     * @var \PhpOffice\PhpSpreadsheet\Spreadsheet
      */
     private Spreadsheet $spreadsheet;
 
     /**
      * アップロードされたExcelファイルから読み取ったSpreadsheetオブジェクトを返す
      *
-     * @return Spreadsheet|null
+     * @return \PhpOffice\PhpSpreadsheet\Spreadsheet
      */
     public function getSpreadsheet()
     {
@@ -43,9 +43,9 @@ class ExcelImportForm extends Form
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function __construct(string $controller = null, ?EventManager $eventManager = null)
+    public function __construct(?string $controller = null, ?EventManager $eventManager = null)
     {
         parent::__construct($eventManager);
         if (is_null($controller)) {
@@ -62,7 +62,7 @@ class ExcelImportForm extends Form
      */
     protected function _buildSchema(Schema $schema): Schema
     {
-        $schema->addField("excel_import_file", ['type' => 'file']);
+        $schema->addField('excel_import_file', ['type' => 'file']);
 
         return $schema;
     }
@@ -80,7 +80,7 @@ class ExcelImportForm extends Form
             ->add('excel_import_file', 'file', [
                 'rule' => ['mimeType', [EXCEL_CONTENT_TYPE]],
                 'message' => 'アップロードされたファイルのタイプが正しくありません',
-                'last' => true
+                'last' => true,
             ])
             ->add('excel_import_file', 'checkExcelVersion', [
                 'rule' => function (UploadedFile $file) {
@@ -104,7 +104,7 @@ class ExcelImportForm extends Form
                     return $valid;
                 },
                 'message' => 'アップロードされたExcelファイルのバージョンが一致しませんでした',
-                'last' => true
+                'last' => true,
             ]);
 
         return $validator;
@@ -123,6 +123,7 @@ class ExcelImportForm extends Form
 
     /**
      * エラーメッセージの配列を取得する
+     *
      * @return array|null エラーメッセージの配列
      */
     public function getErrorMessages()
@@ -142,6 +143,7 @@ class ExcelImportForm extends Form
 
     /**
      * 1個辺りの項目のエラーメッセージを返す
+     *
      * @param array $each_error 1項目辺りのエラー情報
      * @return string|array
      */

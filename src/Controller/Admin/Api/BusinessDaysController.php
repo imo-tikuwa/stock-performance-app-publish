@@ -1,7 +1,8 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Admin\Api;
 
-use App\Controller\Admin\Api\ApiController;
 use Cake\Utility\Hash;
 
 /**
@@ -12,7 +13,6 @@ use Cake\Utility\Hash;
 class BusinessDaysController extends ApiController
 {
     /**
-     *
      * @return void
      */
     public function index()
@@ -23,7 +23,7 @@ class BusinessDaysController extends ApiController
         $this->set([
             'results' => $results,
             '_serialize' => 'results',
-            '_jsonOptions' => JSON_UNESCAPED_UNICODE
+            '_jsonOptions' => JSON_UNESCAPED_UNICODE,
         ]);
     }
 }

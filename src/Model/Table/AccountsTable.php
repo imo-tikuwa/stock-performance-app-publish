@@ -4,17 +4,12 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
  * Accounts Model
  *
  * @property \App\Model\Table\DailyRecordsTable&\Cake\ORM\Association\HasMany $DailyRecords
- *
  * @method \App\Model\Entity\Account newEmptyEntity()
  * @method \App\Model\Entity\Account newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Account[] newEntities(array $data, array $options = [])
@@ -28,12 +23,10 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Account[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Account[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Account[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class AccountsTable extends AppTable
 {
-
     /**
      * Initialize method
      *
@@ -71,12 +64,12 @@ class AccountsTable extends AppTable
             ->add('name', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => '口座名を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('name', 'maxLength', [
                 'rule' => ['maxLength', 255],
                 'message' => '口座名は255文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('name', '口座名を入力してください。');
 
@@ -86,17 +79,17 @@ class AccountsTable extends AppTable
             ->add('init_record', 'integer', [
                 'rule' => 'isInteger',
                 'message' => '初期資産額を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('init_record', 'greaterThanOrEqual', [
                 'rule' => ['comparison', '>=', 0],
                 'message' => '初期資産額は0以上の値で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('init_record', 'lessThanOrEqual', [
                 'rule' => ['comparison', '<=', 1000000000],
                 'message' => '初期資産額は1000000000以下の値で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('init_record', '初期資産額を入力してください。');
 
@@ -108,7 +101,7 @@ class AccountsTable extends AppTable
      * ファイル項目、GoogleMap項目のJSON文字列を配列に変換する
      *
      * @see \Cake\ORM\Table::patchEntity()
-     * @param EntityInterface $entity エンティティ
+     * @param \Cake\Datasource\EntityInterface $entity エンティティ
      * @param array $data エンティティに上書きするデータ
      * @param array $options オプション配列
      * @return \App\Model\Entity\Account
@@ -117,11 +110,13 @@ class AccountsTable extends AppTable
     {
         $entity = parent::patchEntity($entity, $data, $options);
         assert($entity instanceof \App\Model\Entity\Account);
+
         return $entity;
     }
 
     /**
      * ページネートに渡すクエリオブジェクトを生成する
+     *
      * @param array $request リクエスト情報
      * @return \Cake\ORM\Query $query
      */
@@ -150,6 +145,7 @@ class AccountsTable extends AppTable
 
     /**
      * CSVヘッダー情報を取得する
+     *
      * @return array
      */
     public function getCsvHeaders()
@@ -165,6 +161,7 @@ class AccountsTable extends AppTable
 
     /**
      * CSVカラム情報を取得する
+     *
      * @return array
      */
     public function getCsvColumns()

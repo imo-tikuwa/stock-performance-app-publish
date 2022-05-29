@@ -100,6 +100,12 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
+            ->addColumn('api_token', 'string', [
+                'comment' => 'OpenAPIトークン',
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
             ->addColumn('created', 'datetime', [
                 'comment' => '作成日時',
                 'default' => null,

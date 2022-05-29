@@ -4,10 +4,6 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -26,12 +22,10 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Calendar[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Calendar[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Calendar[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CalendarsTable extends AppTable
 {
-
     /**
      * Initialize method
      *
@@ -66,7 +60,7 @@ class CalendarsTable extends AppTable
             ->add('day', 'date', [
                 'rule' => ['date', ['ymd']],
                 'message' => '日付を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyDate('day', '日付を入力してください。');
 
@@ -78,7 +72,7 @@ class CalendarsTable extends AppTable
                     return array_key_exists($value, _code('Codes.Calendars.is_holiday'));
                 },
                 'message' => '休日？に不正な値が含まれています。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('is_holiday', '休日？を選択してください。');
 
@@ -88,12 +82,12 @@ class CalendarsTable extends AppTable
             ->add('holiday_name', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => '休日名を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('holiday_name', 'maxLength', [
                 'rule' => ['maxLength', 255],
                 'message' => '休日名は255文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('holiday_name', '休日名を入力してください。');
 
@@ -105,7 +99,7 @@ class CalendarsTable extends AppTable
      * ファイル項目、GoogleMap項目のJSON文字列を配列に変換する
      *
      * @see \Cake\ORM\Table::patchEntity()
-     * @param EntityInterface $entity エンティティ
+     * @param \Cake\Datasource\EntityInterface $entity エンティティ
      * @param array $data エンティティに上書きするデータ
      * @param array $options オプション配列
      * @return \App\Model\Entity\Calendar
@@ -114,11 +108,13 @@ class CalendarsTable extends AppTable
     {
         $entity = parent::patchEntity($entity, $data, $options);
         assert($entity instanceof \App\Model\Entity\Calendar);
+
         return $entity;
     }
 
     /**
      * 年を元にリストを取得する
+     *
      * @param string $year 年
      * @return array
      */
@@ -134,6 +130,7 @@ class CalendarsTable extends AppTable
 
     /**
      * 営業日を全件取得する
+     *
      * @return array
      */
     public function findBusinessDays()
@@ -147,9 +144,10 @@ class CalendarsTable extends AppTable
 
     /**
      * FromToの日付を元に営業日を取得する
+     *
      * @param string $day_from From日付文字列
      * @param string $day_to To日付文字列
-     * @return array|null
+     * @return array
      */
     public function findDisplayTargetDates($day_from, $day_to)
     {
@@ -164,7 +162,7 @@ class CalendarsTable extends AppTable
         ->toArray();
 
         if (empty($business_days)) {
-            return null;
+            return [];
         }
 
         foreach ($business_days as $business_day) {
@@ -176,6 +174,7 @@ class CalendarsTable extends AppTable
 
     /**
      * 引数の日付が営業日か判定する
+     *
      * @param string $date_str 日付文字列
      * @return bool trueのとき引数の日付は営業日
      */

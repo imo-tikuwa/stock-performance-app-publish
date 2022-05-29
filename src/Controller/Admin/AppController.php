@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Utils\AuthUtils;
@@ -13,9 +15,7 @@ use Cake\Http\ServerRequest;
 class AppController extends \App\Controller\AppController
 {
     /**
-     *
-     * {@inheritDoc}
-     * @see \App\Controller\AppController::initialize()
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -28,16 +28,14 @@ class AppController extends \App\Controller\AppController
     }
 
     /**
-     *
-     * {@inheritDoc}
-     * @see \Cake\Controller\Controller::beforeFilter()
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
 
         // ログインチェック
-        if (!$this->Authentication->getResult()->isValid()) {
+        if (!$this->Authentication->getResult()?->isValid()) {
             return;
         }
 
@@ -52,18 +50,13 @@ class AppController extends \App\Controller\AppController
     /**
      * cakephp/authorizationプラグインの代わりの認可処理
      *
-     * @param ServerRequest $request リクエスト情報
+     * @param \Cake\Http\ServerRequest $request リクエスト情報
      * @return bool
      */
     private function authorize(ServerRequest $request): bool
     {
         // 権限なしでアクセス可能なコントローラ
         if (in_array($request->getParam('controller'), ['Auth', 'Top'])) {
-            return true;
-        }
-
-        // ログイン中はAPIは全部使用可
-        if ($request->getParam('prefix') === 'Admin/Api') {
             return true;
         }
 

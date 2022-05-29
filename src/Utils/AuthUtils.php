@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Utils;
 
 use App\Model\Entity\Admin;
@@ -9,20 +11,17 @@ use Psr\Log\LogLevel;
 
 class AuthUtils
 {
-
     /**
      * Adminsテーブルの管理者判定
-     * @param ServerRequest $request リクエスト情報
+     *
+     * @param \Cake\Http\ServerRequest $request リクエスト情報
      * @return bool
      */
-    public static function isSuperUser(ServerRequest $request = null)
+    public static function isSuperUser(ServerRequest $request)
     {
-        if (is_null($request)) {
-            return false;
-        }
         $super_user = false;
         try {
-            $super_user = (SUPER_USER_ID === $request->getSession()->read('Auth.Admin.id'));
+            $super_user = ($request->getSession()->read('Auth.Admin.id') === SUPER_USER_ID);
         } catch (Exception $e) {
             Log::write(LogLevel::ERROR, $e->getMessage());
 
@@ -33,23 +32,17 @@ class AuthUtils
     }
 
     /**
-     *
      * リクエスト先へのアクセスに必要な権限を持っているかチェック
      *
-     * @param ServerRequest $request リクエスト情報
+     * @param \Cake\Http\ServerRequest $request リクエスト情報
      * @param array $properties  権限チェックプロパティ $requestオブジェクト以外の権限チェックをしたいとき
      *                           'controller' => '[コントローラ名]',
      *                           'action' => '[アクション名]'
      *                           を配列でセットする
-     *
      * @return bool
      */
-    public static function hasRole(ServerRequest $request = null, array $properties = [])
+    public static function hasRole(ServerRequest $request, array $properties = [])
     {
-        if (is_null($request)) {
-            return false;
-        }
-
         // 管理者は全機能にアクセス可
         if (self::isSuperUser($request)) {
             return true;
@@ -113,10 +106,10 @@ class AuthUtils
      * 二段階認証用のQRコード名を返す
      * アカウントのIDを付加した文字列を返す
      *
-     * @param Admin $admin アカウント情報
+     * @param \App\Model\Entity\Admin|null $admin アカウント情報
      * @return string
      */
-    public static function getTwoFactorQrName(Admin $admin = null)
+    public static function getTwoFactorQrName(Admin|null $admin = null)
     {
         if (is_null($admin)) {
             return '';

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use DateTime;
 use DateTimeZone;
@@ -12,7 +11,6 @@ use DateTimeZone;
  * Accounts Controller
  *
  * @property \App\Model\Table\AccountsTable $Accounts
- *
  * @method \App\Model\Entity\Account[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class AccountsController extends AppController
@@ -89,7 +87,7 @@ class AccountsController extends AppController
             $account = $this->Accounts->get($id, [
                 'contain' => [
                     'DailyRecords',
-                ]
+                ],
             ]);
             $this->Accounts->touch($account);
         } else {
@@ -99,13 +97,13 @@ class AccountsController extends AppController
             $account = $this->Accounts->patchEntity($account, $this->getRequest()->getData(), [
                 'associated' => [
                     'DailyRecords',
-                ]
+                ],
             ]);
             if ($account->hasErrors()) {
                 $this->Flash->set(implode('<br />', $account->getErrorMessages()), [
                     'escape' => false,
                     'element' => 'validation_error',
-                    'params' => ['alert-class' => 'text-sm']
+                    'params' => ['alert-class' => 'text-sm'],
                 ]);
             } else {
                 $conn = $this->Accounts->getConnection();
@@ -120,17 +118,20 @@ class AccountsController extends AppController
             }
         }
         $this->set(compact('account'));
+
         return $this->render('edit');
     }
 
     /**
      * csv export method
+     *
      * @return void
      */
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
         $accounts = $this->Accounts->getSearchQuery($request)->toArray();
+        array_walk($accounts, fn(\App\Model\Entity\Account $account) => $account->setHidden([]));
         $extract = [
             // ID
             'id',
@@ -157,7 +158,7 @@ class AccountsController extends AppController
             'serialize' => 'accounts',
             'header' => $this->Accounts->getCsvHeaders(),
             'extract' => $extract,
-            'csvEncoding' => 'UTF-8'
+            'csvEncoding' => 'UTF-8',
         ]);
         $this->set(compact('accounts'));
     }

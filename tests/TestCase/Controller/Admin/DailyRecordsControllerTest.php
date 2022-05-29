@@ -29,12 +29,14 @@ class DailyRecordsControllerTest extends TestCase
 
     /**
      * daily_records table.
+     *
      * @var \App\Model\Table\DailyRecordsTable $DailyRecords
      */
     protected $DailyRecords;
 
     /**
      * admins table.
+     *
      * @var \App\Model\Table\AdminsTable $Admins
      */
     protected $Admins;
@@ -97,7 +99,7 @@ class DailyRecordsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'DailyRecords' => [ROLE_READ],
-            ]
+            ],
         ]);
         $this->Admins->save($read_admin);
         /** @var \App\Model\Entity\Admin $read_admin */
@@ -112,7 +114,7 @@ class DailyRecordsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'DailyRecords' => [ROLE_WRITE],
-            ]
+            ],
         ]);
         $this->Admins->save($write_admin);
         /** @var \App\Model\Entity\Admin $write_admin */
@@ -127,7 +129,7 @@ class DailyRecordsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'DailyRecords' => [ROLE_DELETE],
-            ]
+            ],
         ]);
         $this->Admins->save($delete_admin);
         /** @var \App\Model\Entity\Admin $delete_admin */
@@ -142,7 +144,7 @@ class DailyRecordsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'DailyRecords' => [ROLE_CSV_EXPORT],
-            ]
+            ],
         ]);
         $this->Admins->save($csv_export_admin);
         /** @var \App\Model\Entity\Admin $csv_export_admin */
@@ -157,7 +159,7 @@ class DailyRecordsControllerTest extends TestCase
             'use_otp' => '0',
             'privilege' => [
                 'DailyRecords' => [],
-            ]
+            ],
         ]);
         $this->Admins->save($no_authority_admin);
         /** @var \App\Model\Entity\Admin $no_authority_admin */
@@ -174,7 +176,7 @@ class DailyRecordsControllerTest extends TestCase
     public function testBeforeFilter(): void
     {
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertIsArray($this->viewVariable('account_id_list'));
@@ -193,7 +195,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertResponseCode(200);
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(302);
@@ -224,7 +226,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(200);
@@ -232,7 +234,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(200);
@@ -240,28 +242,28 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->delete_admin
+            'Auth.Admin' => $this->delete_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->csv_export_admin
+            'Auth.Admin' => $this->csv_export_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/daily-records');
         $this->assertResponseCode(302);
@@ -280,7 +282,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/daily-records/view/1');
         $this->assertResponseCode(200);
@@ -288,7 +290,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録詳細</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->get('/admin/daily-records/view/1');
         $this->assertResponseCode(200);
@@ -296,28 +298,28 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録詳細</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->get('/admin/daily-records/view/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->delete_admin
+            'Auth.Admin' => $this->delete_admin,
         ]);
         $this->get('/admin/daily-records/view/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->csv_export_admin
+            'Auth.Admin' => $this->csv_export_admin,
         ]);
         $this->get('/admin/daily-records/view/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/daily-records/view/1');
         $this->assertResponseCode(302);
@@ -336,7 +338,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/daily-records/add');
         $this->assertResponseCode(200);
@@ -344,14 +346,14 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録登録</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->get('/admin/daily-records/add');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->get('/admin/daily-records/add');
         $this->assertResponseCode(200);
@@ -359,21 +361,21 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録登録</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->delete_admin
+            'Auth.Admin' => $this->delete_admin,
         ]);
         $this->get('/admin/daily-records/add');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->csv_export_admin
+            'Auth.Admin' => $this->csv_export_admin,
         ]);
         $this->get('/admin/daily-records/add');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/daily-records/add');
         $this->assertResponseCode(302);
@@ -392,7 +394,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/daily-records/edit/1');
         $this->assertResponseCode(200);
@@ -400,14 +402,14 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録更新</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->get('/admin/daily-records/edit/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->get('/admin/daily-records/edit/1');
         $this->assertResponseCode(200);
@@ -415,21 +417,21 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertTextContains('<title>資産記録更新</title>', (string)$this->_response->getBody());
 
         $this->session([
-            'Auth.Admin' => $this->delete_admin
+            'Auth.Admin' => $this->delete_admin,
         ]);
         $this->get('/admin/daily-records/edit/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->csv_export_admin
+            'Auth.Admin' => $this->csv_export_admin,
         ]);
         $this->get('/admin/daily-records/edit/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/daily-records/edit/1');
         $this->assertResponseCode(302);
@@ -450,7 +452,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $daily_record = $this->DailyRecords->get(1);
         $this->assertInstanceOf('\App\Model\Entity\DailyRecord', $daily_record);
@@ -461,14 +463,14 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertEquals(null, $daily_record);
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->delete('/admin/daily-records/delete/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->delete('/admin/daily-records/delete/1');
         $this->assertResponseCode(302);
@@ -477,21 +479,21 @@ class DailyRecordsControllerTest extends TestCase
         $this->teardownFixtures();
         $this->setupFixtures();
         $this->session([
-            'Auth.Admin' => $this->delete_admin
+            'Auth.Admin' => $this->delete_admin,
         ]);
         $this->delete('/admin/daily-records/delete/1');
         $this->assertResponseCode(302);
         $this->assertSession('資産記録の削除が完了しました。', 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->csv_export_admin
+            'Auth.Admin' => $this->csv_export_admin,
         ]);
         $this->delete('/admin/daily-records/delete/1');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->delete('/admin/daily-records/delete/1');
         $this->assertResponseCode(302);
@@ -507,7 +509,7 @@ class DailyRecordsControllerTest extends TestCase
                 'controller' => 'DailyRecords',
                 'action' => 'delete',
                 'pass' => ['1'],
-            ]
+            ],
         ]);
         $response = new \Cake\Http\Response();
         $controller = new DailyRecordsController($url, $response);
@@ -526,7 +528,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('location', '/admin/auth/login');
 
         $this->session([
-            'Auth.Admin' => $this->super_admin
+            'Auth.Admin' => $this->super_admin,
         ]);
         $this->get('/admin/daily-records/csv-export');
         $this->assertResponseCode(200);
@@ -534,28 +536,28 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('Content-Type', 'text/csv;');
 
         $this->session([
-            'Auth.Admin' => $this->read_admin
+            'Auth.Admin' => $this->read_admin,
         ]);
         $this->get('/admin/daily-records/csv-export');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->write_admin
+            'Auth.Admin' => $this->write_admin,
         ]);
         $this->get('/admin/daily-records/csv-export');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->delete_admin
+            'Auth.Admin' => $this->delete_admin,
         ]);
         $this->get('/admin/daily-records/csv-export');
         $this->assertResponseCode(302);
         $this->assertSession(MESSAGE_AUTH_ERROR, 'Flash.flash.0.message');
 
         $this->session([
-            'Auth.Admin' => $this->csv_export_admin
+            'Auth.Admin' => $this->csv_export_admin,
         ]);
         $this->get('/admin/daily-records/csv-export');
         $this->assertResponseCode(200);
@@ -563,7 +565,7 @@ class DailyRecordsControllerTest extends TestCase
         $this->assertHeaderContains('Content-Type', 'text/csv;');
 
         $this->session([
-            'Auth.Admin' => $this->no_authority_admin
+            'Auth.Admin' => $this->no_authority_admin,
         ]);
         $this->get('/admin/daily-records/csv-export');
         $this->assertResponseCode(302);

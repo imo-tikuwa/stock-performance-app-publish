@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\AppController;
 use App\Form\SearchForm;
 use Cake\Event\EventInterface;
 use Cake\I18n\FrozenDate;
+use Cake\Utility\Hash;
 use DateTime;
 use DateTimeZone;
 
@@ -15,15 +15,12 @@ use DateTimeZone;
  *
  * @property \App\Model\Table\DailyRecordsTable $DailyRecords
  * @property \App\Model\Table\AccountsTable $Accounts
- *
  * @method \App\Model\Entity\DailyRecord[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class DailyRecordsController extends AppController
 {
     /**
-     *
-     * {@inheritDoc}
-     * @see \App\Controller\Admin\AppController::beforeFilter()
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {
@@ -38,6 +35,7 @@ class DailyRecordsController extends AppController
             $account_id_list = $this->Accounts->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
             if (empty($account_id_list)) {
                 $this->Flash->error('口座が登録されていません。');
+
                 return $this->redirect(['controller' => 'Top', 'action' => 'index']);
             }
 
@@ -80,7 +78,7 @@ class DailyRecordsController extends AppController
         $daily_record = $this->DailyRecords->get($id, [
             'contain' => [
                 'Accounts',
-            ]
+            ],
         ]);
 
         $this->set('daily_record', $daily_record);
@@ -121,7 +119,7 @@ class DailyRecordsController extends AppController
             $daily_record = $this->DailyRecords->get($id, [
                 'contain' => [
                     'Accounts',
-                ]
+                ],
             ]);
             $this->DailyRecords->touch($daily_record);
         } else {
@@ -142,13 +140,13 @@ class DailyRecordsController extends AppController
             $daily_record = $this->DailyRecords->patchEntity($daily_record, $this->getRequest()->getData(), [
                 'associated' => [
                     'Accounts',
-                ]
+                ],
             ]);
             if ($daily_record->hasErrors()) {
                 $this->Flash->set(implode('<br />', $daily_record->getErrorMessages()), [
                     'escape' => false,
                     'element' => 'validation_error',
-                    'params' => ['alert-class' => 'text-sm']
+                    'params' => ['alert-class' => 'text-sm'],
                 ]);
             } else {
                 $conn = $this->DailyRecords->getConnection();
@@ -163,6 +161,7 @@ class DailyRecordsController extends AppController
             }
         }
         $this->set(compact('daily_record'));
+
         return $this->render('edit');
     }
 
@@ -189,18 +188,20 @@ class DailyRecordsController extends AppController
 
     /**
      * csv export method
+     *
      * @return void
      */
     public function csvExport()
     {
         $request = $this->getRequest()->getQueryParams();
         $daily_records = $this->DailyRecords->getSearchQuery($request)->toArray();
+        array_walk($daily_records, fn(\App\Model\Entity\DailyRecord $daily_record) => $daily_record->setHidden([]));
         $extract = [
             // ID
             'id',
             // 口座名
             function ($row) {
-                return @$row['account']['name'];
+                return Hash::get($row, 'account.name');
             },
             // 日付
             function ($row) {
@@ -227,7 +228,7 @@ class DailyRecordsController extends AppController
             'serialize' => 'daily_records',
             'header' => $this->DailyRecords->getCsvHeaders(),
             'extract' => $extract,
-            'csvEncoding' => 'UTF-8'
+            'csvEncoding' => 'UTF-8',
         ]);
         $this->set(compact('daily_records'));
     }

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\AppController;
-
 /**
  * Configs Controller
  *
@@ -31,7 +29,7 @@ class ConfigsController extends AppController
                 $this->Flash->set(implode('<br />', $config->getErrorMessages()), [
                     'escape' => false,
                     'element' => 'validation_error',
-                    'params' => ['alert-class' => 'text-sm']
+                    'params' => ['alert-class' => 'text-sm'],
                 ]);
             } else {
                 $conn = $this->Configs->getConnection();
@@ -46,6 +44,7 @@ class ConfigsController extends AppController
             }
         }
         $this->set(compact('config'));
+
         return $this->render('edit');
     }
 }

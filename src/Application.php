@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,19 +16,18 @@
  */
 namespace App;
 
-use Cake\Core\Configure;
-use Cake\Core\Exception\MissingPluginException;
-use Cake\Error\Middleware\ErrorHandlerMiddleware;
-use Cake\Http\BaseApplication;
-use Cake\Http\Middleware\CsrfProtectionMiddleware;
-use Cake\Routing\Middleware\AssetMiddleware;
-use Cake\Routing\Middleware\RoutingMiddleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
+use Cake\Core\Configure;
+use Cake\Core\Exception\MissingPluginException;
+use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Http\BaseApplication;
 use Cake\Http\Middleware\BodyParserMiddleware;
+use Cake\Routing\Middleware\AssetMiddleware;
+use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -39,7 +40,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function bootstrap(): void
     {
@@ -89,7 +90,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             // Handle plugin/theme assets like CakePHP normally does.
             ->add(new AssetMiddleware([
-                'cacheTime' => Configure::read('Asset.cacheTime')
+                'cacheTime' => Configure::read('Asset.cacheTime'),
             ]))
 
             // Add routing middleware.
@@ -107,12 +108,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
-            ->add(new BodyParserMiddleware())
-
-            // Add csrf middleware.
-            ->add(new CsrfProtectionMiddleware([
-                'httponly' => true
-            ]));
+            ->add(new BodyParserMiddleware());
 
         return $middlewareQueue;
     }
@@ -140,7 +136,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
-     * @param ServerRequestInterface $request Representation of an incoming, server-side HTTP request.
+     * @param \Psr\Http\Message\ServerRequestInterface $request Representation of an incoming, server-side HTTP request.
      * @return \Authentication\AuthenticationServiceInterface
      */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
@@ -149,7 +145,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Auth',
-            'action' => ($request->getUri()->getPath() === '/admin/auth/secure-login') ? 'secureLogin' : 'login',
+            'action' => $request->getUri()->getPath() === '/admin/auth/secure-login' ? 'secureLogin' : 'login',
         ]);
         $fields = [
             IdentifierInterface::CREDENTIAL_USERNAME => 'mail',
@@ -167,7 +163,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         ]);
         $authenticationService->loadIdentifier('SecurePassword', compact('fields'));
         $authenticationService->loadAuthenticator('Authentication.Session', [
-            'sessionKey' => 'Auth.Admin'
+            'sessionKey' => 'Auth.Admin',
         ]);
         $authenticationService->loadAuthenticator('Authentication.Form', compact('loginUrl', 'fields'));
 

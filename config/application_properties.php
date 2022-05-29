@@ -259,6 +259,8 @@ return [
             ROLE_WRITE => '設定書込',
         ],
     ],
+    'SwaggerConfigs' => [
+    ],
     'Others' => [
         'search_snippet_format' => [
             'AND' => ' AND',

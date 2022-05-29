@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -20,13 +22,10 @@ use Cake\View\View;
  *
  * Your application’s default view class
  *
- * @property \App\View\Helper\DisplayHelper $Display
- *
  * @link https://book.cakephp.org/3.0/en/views.html#the-app-view
  */
 class AppView extends View
 {
-
     /**
      * Initialization hook method.
      *
@@ -42,26 +41,27 @@ class AppView extends View
 
     /**
      * アカウント権限編集画面の権限設定フォームを表示
+     *
      * @param array $current_privilege 現在の権限の設定値
      * @return string html
      */
     public function makePrivilegeEditHtml($current_privilege = null)
     {
-        $html = "";
-        $html .= "<table class=\"table table-sm table-borderless\">";
+        $html = '';
+        $html .= '<table class="table table-sm table-borderless">';
         foreach (_code('BakedFunctions') as $controller => $function_name) {
-            $html .= "  <tr>";
-            $html .= "    <td class=\"pl-0 text-nowrap col-form-label-sm\">";
+            $html .= '  <tr>';
+            $html .= '    <td class="pl-0 text-nowrap col-form-label-sm">';
             $html .= "      {$function_name}";
-            $html .= "    </td>";
-            $html .= "    <td>";
+            $html .= '    </td>';
+            $html .= '    <td>';
             foreach (_code("AdminRoles.{$controller}") as $role_key => $role_name) {
-                $id = strtoupper($controller) . "_" . $role_key;
+                $id = strtoupper($controller) . '_' . $role_key;
                 $checked = false;
                 if (!is_null($current_privilege) && isset($current_privilege[$controller]) && in_array($role_key, $current_privilege[$controller], true)) {
                     $checked = true;
                 }
-                $html .= "<div class=\"form-check form-check-inline\">";
+                $html .= '<div class="form-check form-check-inline">';
                 /** @var string $checkbox */
                 $checkbox = $this->Form->checkbox("privilege.{$controller}[]", [
                     'value' => $role_key,
@@ -74,25 +74,26 @@ class AppView extends View
                 $html .= $checkbox;
                 $badge_class = _code("SystemProperties.RoleBadgeClass.{$role_key}");
                 $html .= "<label class=\"form-check-label rounded-0 {$badge_class}\" for=\"{$id}\">{$role_name}</label>";
-                $html .= "</div>";
+                $html .= '</div>';
             }
-            $html .= "";
-            $html .= "    </td>";
-            $html .= "  <tr/>";
+            $html .= '';
+            $html .= '    </td>';
+            $html .= '  <tr/>';
         }
-        $html .= "</table>";
+        $html .= '</table>';
 
         return $html;
     }
 
     /**
      * アカウント権限一覧画面の権限設定を表示
+     *
      * @param array $current_privilege 現在の権限の設定値
      * @return string html
      */
     public function makePrivilegeListHtml($current_privilege = null)
     {
-        $html = "";
+        $html = '';
         if (is_null($current_privilege)) {
             return $html;
         }
@@ -103,7 +104,7 @@ class AppView extends View
                     $badge_class = _code("SystemProperties.RoleBadgeClass.{$controller_privilege}");
                     $html .= "<label class=\"form-check-label rounded-0 {$badge_class}\">{$role_name}</label>&nbsp;";
                 }
-                $html .= "<br />";
+                $html .= '<br />';
             }
         }
 

@@ -7,6 +7,7 @@ CREATE TABLE `admins` (
   `use_otp` tinyint(1) DEFAULT '0' COMMENT '二段階認証を使用する？',
   `otp_secret` varchar(255) DEFAULT NULL COMMENT '二段階認証用シークレットキー',
   `privilege` json DEFAULT NULL COMMENT '権限',
+  `api_token` varchar(255) DEFAULT NULL COMMENT 'OpenAPIトークン',
   `created` datetime DEFAULT NULL COMMENT '作成日時',
   `modified` datetime DEFAULT NULL COMMENT '更新日時',
   `deleted` datetime DEFAULT NULL COMMENT '削除日時',

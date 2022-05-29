@@ -22,12 +22,10 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class ConfigsTable extends AppTable
 {
-
     /**
      * Initialize method
      *
@@ -62,19 +60,19 @@ class ConfigsTable extends AppTable
             ->add('display_only_month', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => '月ごと表示モードを正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('display_only_month', 'maxLength', [
                 'rule' => ['maxLength', 2],
                 'message' => '月ごと表示モードは2文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('display_only_month', 'existIn', [
                 'rule' => function ($value) {
                     return array_key_exists($value, _code('Codes.Configs.display_only_month'));
                 },
                 'message' => '月ごと表示モードに不正な値が含まれています。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('display_only_month', '月ごと表示モードを選択してください。');
 
@@ -84,19 +82,19 @@ class ConfigsTable extends AppTable
             ->add('display_init_record', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => '初期資産額表示を正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('display_init_record', 'maxLength', [
                 'rule' => ['maxLength', 2],
                 'message' => '初期資産額表示は2文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('display_init_record', 'existIn', [
                 'rule' => function ($value) {
                     return array_key_exists($value, _code('Codes.Configs.display_init_record'));
                 },
                 'message' => '初期資産額表示に不正な値が含まれています。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('display_init_record', '初期資産額表示を選択してください。');
 
@@ -106,14 +104,14 @@ class ConfigsTable extends AppTable
             ->add('record_total_real_color', 'lengthBetween', [
                 'rule' => ['lengthBetween', 6, 6],
                 'message' => '実質資産のチャートカラーは6桁の16進数で入力してください。。',
-                'last' => true
+                'last' => true,
             ])
             ->add('record_total_real_color', 'correctDigit', [
                 'rule' => function ($value) {
                     return ctype_xdigit($value);
                 },
                 'message' => '実質資産のチャートカラーは6桁の16進数で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('record_total_real_color', '実質資産のチャートカラーを入力してください。');
 
@@ -123,14 +121,14 @@ class ConfigsTable extends AppTable
             ->add('init_record_color', 'lengthBetween', [
                 'rule' => ['lengthBetween', 6, 6],
                 'message' => '初期資産のチャートカラーは6桁の16進数で入力してください。。',
-                'last' => true
+                'last' => true,
             ])
             ->add('init_record_color', 'correctDigit', [
                 'rule' => function ($value) {
                     return ctype_xdigit($value);
                 },
                 'message' => '初期資産のチャートカラーは6桁の16進数で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->notEmptyString('init_record_color', '初期資産のチャートカラーを入力してください。');
 
@@ -144,10 +142,11 @@ class ConfigsTable extends AppTable
                             return false;
                         }
                     }
+
                     return true;
                 },
                 'message' => '表示項目設定に不正な値が含まれています。',
-                'last' => true
+                'last' => true,
             ])
             ->allowEmptyArray('display_setting');
 
@@ -156,12 +155,12 @@ class ConfigsTable extends AppTable
             ->add('chromedriver_path', 'scalar', [
                 'rule' => 'isScalar',
                 'message' => 'ChromeDriverのパスを正しく入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->add('chromedriver_path', 'maxLength', [
                 'rule' => ['maxLength', 255],
                 'message' => 'ChromeDriverのパスは255文字以内で入力してください。',
-                'last' => true
+                'last' => true,
             ])
             ->allowEmptyString('chromedriver_path');
 
@@ -173,7 +172,7 @@ class ConfigsTable extends AppTable
      * ファイル項目、GoogleMap項目のJSON文字列を配列に変換する
      *
      * @see \Cake\ORM\Table::patchEntity()
-     * @param EntityInterface $entity エンティティ
+     * @param \Cake\Datasource\EntityInterface $entity エンティティ
      * @param array $data エンティティに上書きするデータ
      * @param array $options オプション配列
      * @return \App\Model\Entity\Config
@@ -187,6 +186,7 @@ class ConfigsTable extends AppTable
 
         $entity = parent::patchEntity($entity, $data, $options);
         assert($entity instanceof \App\Model\Entity\Config);
+
         return $entity;
     }
 }

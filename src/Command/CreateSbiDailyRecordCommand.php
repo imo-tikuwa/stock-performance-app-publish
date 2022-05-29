@@ -194,13 +194,13 @@ class CreateSbiDailyRecordCommand extends Command
                 'target day',
                 'account_id',
                 'record',
-                'save status'
+                'save status',
             ],
             [
                 $day,
                 "<text-right>{$account_id}</text-right>",
                 "<text-right>{$record}</text-right>",
-                $result instanceof \App\Model\Entity\DailyRecord ? 'true' : 'false'
+                $result instanceof \App\Model\Entity\DailyRecord ? 'true' : 'false',
             ],
         ]);
         $io->success('The process of CreateSbiDailyRecordCommand is completed succesfully.');

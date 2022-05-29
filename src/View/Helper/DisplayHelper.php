@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\View\Helper;
 
 use Cake\View\Helper;
-use Cake\View\View;
 
 /**
  * Display helper
@@ -33,6 +32,7 @@ class DisplayHelper extends Helper
             $color_code = 'text-danger';
         }
         $sort_value = !is_null($sort_value) ? " data-sort-val='{$sort_value}'" : '';
+
         return "<span class='{$color_code}'{$sort_value}>{$value}</span>";
     }
 
@@ -46,6 +46,7 @@ class DisplayHelper extends Helper
     public function span($value, $sort_value = null)
     {
         $sort_value = !is_null($sort_value) ? " data-sort-val='{$sort_value}'" : '';
+
         return "<span{$sort_value}>{$value}</span>";
     }
 }
