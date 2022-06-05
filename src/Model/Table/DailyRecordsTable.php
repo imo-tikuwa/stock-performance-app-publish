@@ -45,6 +45,7 @@ class DailyRecordsTable extends AppTable
         $this->setPrimaryKey('id');
         $this->belongsTo('Accounts', [
             'foreignKey' => 'account_id',
+            'joinType' => 'INNER',
         ]);
     }
 

@@ -135,7 +135,6 @@ class DailyRecordsController extends AppController
             $daily_record->account_id = $account_id;
             $daily_record->day = FrozenDate::parse($day);
         }
-
         if ($this->getRequest()->is(['patch', 'post', 'put'])) {
             $daily_record = $this->DailyRecords->patchEntity($daily_record, $this->getRequest()->getData(), [
                 'associated' => [
@@ -205,7 +204,7 @@ class DailyRecordsController extends AppController
             },
             // 日付
             function ($row) {
-                return $row['day']?->i18nFormat('yyyy-MM-dd');
+                return $row['day']->i18nFormat('yyyy-MM-dd');
             },
             // 資産額
             function ($row) {
@@ -213,11 +212,11 @@ class DailyRecordsController extends AppController
             },
             // 作成日時
             function ($row) {
-                return $row['created']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
+                return $row['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
             // 更新日時
             function ($row) {
-                return $row['modified']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
+                return $row['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
         ];
 

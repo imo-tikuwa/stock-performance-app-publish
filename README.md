@@ -29,13 +29,13 @@ composer install
 3. アプリケーションで使用するデータベースを作成
    - MySQLクライアントで以下実行
 ```
-CREATE DATABASE [DB名] CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE [DB名] CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,INDEX,ALTER ON [DB名].* TO '[DBユーザー]'@'localhost' IDENTIFIED BY '[DBパスワード]';
 FLUSH PRIVILEGES;
 ```
 
 4. configディレクトリに.envファイルを作成
-   - DATABASE_NAME、DATABASE_USER、DATABASE_PASSはそれぞれ手順3と同じものを入力  
+   - DATABASE_NAME、DATABASE_USER、DATABASE_PASSはそれぞれ手順3と同じものを入力
    - DATABASE_PORT、SECURITY_SALTは必要に応じて修正
 ```
 #!/usr/bin/env bash
@@ -98,7 +98,7 @@ bin\cake.bat create_sbi_daily_record [account_id]
  - セットアップ手順を実行した時点で2021年と2022年の営業日データは入っています
  - 2023年以降は以下のコマンドでカレンダーのデータを最新化する必要があります
    - [year]には4桁の年を入力します
-   - 祝日が決まるのがいつなのかわからないので現在年もしくは現在年+1の入力制限があります 
+   - 祝日が決まるのがいつなのかわからないので現在年もしくは現在年+1の入力制限があります
 ```
 bin\cake.bat create_calendars [year]
 ```

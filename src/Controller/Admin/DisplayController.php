@@ -145,7 +145,7 @@ class DisplayController extends AppController
                     $daily_record_id = null;
                     $day_record = null;
                     foreach ($account_daily_records as $daily_record) {
-                        if ($daily_record->day?->i18nFormat('yyyy-MM-dd') === $current_ymd) {
+                        if ($daily_record->day->i18nFormat('yyyy-MM-dd') === $current_ymd) {
                             $day_record = $daily_record->record;
                             $daily_record_id = $daily_record->id;
                             break;

@@ -7,10 +7,10 @@ namespace App\Model\Entity;
  * Deposit Entity
  *
  * @property int $id
- * @property \Cake\I18n\FrozenDate|null $deposit_date
- * @property int|null $deposit_amount
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\FrozenDate $deposit_date
+ * @property int $deposit_amount
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $modified
  * @property \Cake\I18n\FrozenTime|null $deleted
  */
 class Deposit extends AppEntity

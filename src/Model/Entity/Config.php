@@ -7,14 +7,14 @@ namespace App\Model\Entity;
  * Config Entity
  *
  * @property int $id
- * @property string|null $display_only_month
- * @property string|null $display_init_record
- * @property string|null $record_total_real_color
- * @property string|null $init_record_color
+ * @property string $display_only_month
+ * @property string $display_init_record
+ * @property string $record_total_real_color
+ * @property string $init_record_color
  * @property array|null $display_setting
  * @property string|null $chromedriver_path
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $modified
  */
 class Config extends AppEntity
 {

@@ -7,11 +7,11 @@ namespace App\Model\Entity;
  * DailyRecord Entity
  *
  * @property int $id
- * @property int|null $account_id
- * @property \Cake\I18n\FrozenDate|null $day
- * @property int|null $record
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property int $account_id
+ * @property \Cake\I18n\FrozenDate $day
+ * @property int $record
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $modified
  *
  * @property \App\Model\Entity\Account $account
  */
