@@ -7,10 +7,10 @@ namespace App\Model\Entity;
  * Account Entity
  *
  * @property int $id
- * @property string|null $name
- * @property int|null $init_record
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property string $name
+ * @property int $init_record
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $modified
  *
  * @property \App\Model\Entity\DailyRecord[] $daily_records
  */

@@ -143,11 +143,11 @@ class AccountsController extends AppController
             },
             // 作成日時
             function ($row) {
-                return $row['created']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
+                return $row['created']->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
             // 更新日時
             function ($row) {
-                return $row['modified']?->i18nFormat('yyyy-MM-dd HH:mm:ss');
+                return $row['modified']->i18nFormat('yyyy-MM-dd HH:mm:ss');
             },
         ];
 

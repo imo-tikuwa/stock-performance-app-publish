@@ -7,11 +7,11 @@ namespace App\Model\Entity;
  * Calendar Entity
  *
  * @property int $id
- * @property \Cake\I18n\FrozenDate|null $day
- * @property bool|null $is_holiday
- * @property string|null $holiday_name
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
+ * @property \Cake\I18n\FrozenDate $day
+ * @property bool $is_holiday
+ * @property string $holiday_name
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $modified
  */
 class Calendar extends AppEntity
 {
