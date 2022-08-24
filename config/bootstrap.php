@@ -18,7 +18,7 @@ declare(strict_types=1);
 /*
  * Configure paths required to find CakePHP + general filepath constants
  */
-require __DIR__ . '/paths.php';
+require __DIR__ . DIRECTORY_SEPARATOR . 'paths.php';
 
 /*
  * Bootstrap CakePHP.
@@ -37,8 +37,8 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Database\Type\StringType;
 use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
-use Cake\Error\ConsoleErrorHandler;
-use Cake\Error\ErrorHandler;
+use Cake\Error\ErrorTrap;
+use Cake\Error\ExceptionTrap;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
@@ -46,7 +46,7 @@ use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 
-/**
+/*
  * See https://github.com/josegonzalez/php-dotenv for API details.
  *
  * Uncomment block of code below if you want to use `.env` file during development.
@@ -59,7 +59,7 @@ use Cake\Utility\Security;
  * If you use .env files, be careful to not commit them to source control to avoid
  * security risks. See https://github.com/josegonzalez/php-dotenv#general-security-information
  * for more information for recommended practices.
- */
+*/
 if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
     $dotenv->parse()
@@ -78,10 +78,10 @@ if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
  */
 try {
     Configure::config('default', new PhpConfig());
-    require_once (__DIR__ . '/consts.php');
+    require_once (__DIR__ . DS . 'consts.php');
     Configure::load('app', 'default', false);
     Configure::load('application_properties', 'default');
-    require_once (__DIR__ . '/functions.php');
+    require_once (__DIR__ . DS . 'functions.php');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -128,18 +128,14 @@ ini_set('intl.default_locale', Configure::read('App.defaultLocale'));
 /*
  * Register application error and exception handlers.
  */
-$isCli = PHP_SAPI === 'cli';
-if ($isCli) {
-    (new ConsoleErrorHandler(Configure::read('Error')))->register();
-} else {
-    (new ErrorHandler(Configure::read('Error')))->register();
-}
+(new ErrorTrap(Configure::read('Error')))->register();
+(new ExceptionTrap(Configure::read('Error')))->register();
 
 /*
  * Include the CLI bootstrap overrides.
  */
-if ($isCli) {
-    require __DIR__ . '/bootstrap_cli.php';
+if (PHP_SAPI === 'cli') {
+    require CONFIG . 'bootstrap_cli.php';
 }
 
 /*
@@ -148,9 +144,18 @@ if ($isCli) {
  */
 $fullBaseUrl = Configure::read('App.fullBaseUrl');
 if (!$fullBaseUrl) {
+    /*
+     * When using proxies or load balancers, SSL/TLS connections might
+     * get terminated before reaching the server. If you trust the proxy,
+     * you can enable `$trustProxy` to rely on the `X-Forwarded-Proto`
+     * header to determine whether to generate URLs using `https`.
+     *
+     * See also https://book.cakephp.org/4/en/controllers/request-response.html#trusting-proxy-headers
+     */
+    $trustProxy = false;
 
     $s = null;
-    if (env('HTTPS')) {
+    if (env('HTTPS') || ($trustProxy && env('HTTP_X_FORWARDED_PROTO') === 'https')) {
         $s = 's';
     }
 
@@ -174,6 +179,8 @@ Security::setSalt(Configure::consume('Security.salt'));
 
 /*
  * Setup detectors for mobile and tablet.
+ * If you don't use these checks you can safely remove this code
+ * and the mobiledetect package from composer.json.
  */
 ServerRequest::addDetector('mobile', function ($request) {
     $detector = new \Detection\MobileDetect();
